@@ -1,0 +1,205 @@
+
+   
+<%- include('../layouts/layout'); -%>
+
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+<head>
+    <link rel="stylesheet" href="/assets/css/header.css" type="text/css">
+    <link rel="stylesheet" href="/assets/css/sidenav.css" type="text/css">
+    <script src="/assets/js/header_index.js"></script>
+</head>
+
+<!-- Navbar -->
+<nav id="navbar-main" class="navbar navbar-horizontal navbar-transparent navbar-main navbar-expand-lg navbar-light custom-nav">
+    <button type="button" id="back-button" class="btn btn-info" onclick="window.history.back()">
+        <i class="fas fa-align-justify" style="font-size:medium;"></i>
+        <span></span>
+    </button> 
+    <div class="container">
+        <div class="navbar-collapse navbar-custom-collapse collapse" id="navbar-collapse">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="navbar-brand" href="/">
+                        <p style="margin-top: 10px; font-size: 20px"><i class="fas fa-camera"></i> Capture It!</p>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/" class="nav-link">
+                        <span class="nav-link-inner--text">Home</span>
+                    </a>
+                </li>
+<!-- 
+                {{# if login}}
+                {{# ifEquals this.session.user.who "1"}}
+                <li class="nav-item">
+                    <a href="/classroom/userClasses" class="nav-link">
+                        <span class="nav-link-inner--text">Classes</span>
+                    </a>
+                </li>
+                {{/ifEquals}}
+                {{# ifEquals this.session.user.who "0"}}
+                <li class="nav-item">
+                    <a href="/user/dashboard" class="nav-link">
+                        <span class="nav-link-inner--text">Dashboard</span>
+                    </a>
+                </li>
+                {{/ifEquals}}
+                {{# ifEquals this.session.user.who "1"}}
+                <li class="nav-item">
+                    <a href="/user/profile" class="nav-link">
+                        <span class="nav-link-inner--text">Profile</span>
+                    </a>
+                </li>
+                {{/ifEquals}}
+                {{# ifEquals this.session.user.who "0"}}
+                <li class="nav-item">
+                    <a href="/classroom/teacher-classrooms" class="nav-link">
+                        <span class="nav-link-inner--text">Classrooms</span>
+                    </a>
+                </li>
+                {{/ifEquals}}
+                <li class="nav-item">
+                    <a href="/user/logout" class="nav-link">
+                        <span class="nav-link-inner--text">Logout</span>
+                    </a>
+                </li>
+                {{else}}
+                <li class="nav-item">
+                    <a href="/user/login" class="nav-link">
+                        <span class="nav-link-inner--text">Login</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/user/otp/student" class="nav-link">
+                        <span class="nav-link-inner--text"> Student Registration</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="/user/otp/teacher" class="nav-link">
+                        <span class="nav-link-inner--text"> Teacher Registration</span>
+                    </a>
+                </li>
+                {{/if}}
+            </ul>
+
+-->
+            <hr class="d-lg-none" />
+            <ul class="navbar-nav align-items-lg-center ml-lg-auto">
+                <li class="nav-item">
+                    <a class="nav-link nav-link-icon" href="https://www.facebook.com/" target="_blank"
+                        data-toggle="tooltip" data-original-title="Like us on Facebook">
+                        <i class="fab fa-facebook-square"></i>
+                        <span class="nav-link-inner--text d-lg-none">Facebook</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-icon" href="https://www.instagram.com/" target="_blank"
+                        data-toggle="tooltip" data-original-title="Follow us on Instagram">
+                        <i class="fab fa-instagram"></i>
+                        <span class="nav-link-inner--text d-lg-none">Instagram</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-icon" href="https://twitter.com/" target="_blank" data-toggle="tooltip"
+                        data-original-title="Follow us on Twitter">
+                        <i class="fab fa-twitter-square"></i>
+                        <span class="nav-link-inner--text d-lg-none">Twitter</span>
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link nav-link-icon" href="https://github.com" target="_blank" data-toggle="tooltip"
+                        data-original-title="Star us on Github">
+                        <i class="fab fa-github"></i>
+                        <span class="nav-link-inner--text d-lg-none">Github</span>
+                    </a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+
+
+<div class="small-screen-nav">
+    <div class="pos-f-t">
+        <div class="collapse" id="navbarToggleExternalContent">
+            <div class=" p-4" style="background-color:#172b4d;">
+                <ul class="navbar-nav mr-auto">
+                    <li class="nav-item custom-nav-item">
+                        <a href="/" class="text-white">
+                            <i class="fas fa-home text-primary mr-2"></i>
+                            <span class="nav-link-inner--text">Home</span>
+                        </a>
+                    </li>
+  <!--                   
+                    {{# if login}}
+                    {{# ifEquals this.session.user.who "1"}}
+                    <li class="nav-item custom-nav-item">
+                        <a href="/classroom/userClasses" class="text-white">
+                            <i class="ni ni-bullet-list-67 text-primary mr-2"></i>
+                            <span class="nav-link-inner--text">Classes</span>
+                        </a>
+                    </li>
+                    {{/ifEquals}}
+                    {{# ifEquals this.session.user.who "0"}}
+                    <li class="nav-item custom-nav-item">
+                        <a href="/user/dashboard" class="text-white">
+                            <i class="ni ni-tv-2 text-primary mr-2"></i>
+                            <span class="nav-link-inner--text">Dashboard</span>
+                        </a>
+                    </li>
+                    {{/ifEquals}}
+                    {{# ifEquals this.session.user.who "1"}}
+                    <li class="nav-item custom-nav-item">
+                        <a href="/user/profile" class="text-white">
+                            <i class="ni ni-single-02 text-primary mr-2"></i>
+                            <span class="nav-link-inner--text">Profile</span>
+                        </a>
+                    </li>
+                    {{/ifEquals}}
+                    {{# ifEquals this.session.user.who "0"}}
+                    <li class="nav-item custom-nav-item">
+                        <a href="/classroom/teacher-classrooms" class="text-white">
+                            <i class="ni ni-bullet-list-67 text-primary mr-2"></i>
+                            <span class="nav-link-inner--text">Classrooms</span>
+                        </a>
+                    </li>
+                    {{/ifEquals}}
+                    <li class="nav-item custom-nav-item">
+                        <a href="/user/logout" class="text-white">
+                            <i class="ni ni-user-run text-primary mr-2"></i>
+                            <span class="nav-link-inner--text">Logout</span>
+                        </a>
+                    </li>
+                    {{else}}
+                    <li class="nav-item custom-nav-item">
+                        <a href="/user/login" class="text-white">
+                            <i class="fas fa-sign-in-alt text-primary mr-2"></i>
+                            <span class="nav-link-inner--text">Login</span>
+                        </a>
+                    </li>
+                    <li class="nav-item custom-nav-item">
+                        <a href="/user/otp/student" class="text-white">
+                        <i class="fas fa-graduation-cap text-primary mr-2"></i>
+                            <span class="nav-link-inner--text"> Student Registration</span>
+                        </a>
+                    </li>
+                    <li class="nav-item custom-nav-item">
+                        <a href="/user/otp/teacher" class="text-white">
+                            <i class="fas fa-chalkboard-teacher text-primary mr-2"></i>
+                            <span class="nav-link-inner--text"> Teacher Registration</span>
+                        </a>
+                    </li>
+                    {{/if}}
+                </ul>
+-->
+            </div>
+        </div>
+        <nav class="navbar navbar-dark ">
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarToggleExternalContent" aria-controls="navbarToggleExternalContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+        </nav>
+    </div>
+</div>
