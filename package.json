@@ -21,7 +21,7 @@
     "express-fileupload": "^1.1.7-alpha.3",
     "express-recaptcha": "^5.0.1",
     "express-session": "^1.17.1",
-    "express-validator": "5.3.1",
+    "express-validator": "^5.3.0",
     "formdata-polyfill": "^3.0.19",
     "geocoder": "^0.2.3",
     "googleapis": "^92.0.0",

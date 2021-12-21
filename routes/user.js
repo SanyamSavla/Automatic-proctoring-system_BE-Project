@@ -124,5 +124,18 @@ router.get("/login", (req, res, next) => {
         res.redirect("/user/login");
     }
      
+    function notLoggedIn(req, res, next) {
+        if (!req.isAuthenticated()) {
+          return next();
+        }
+        res.redirect('/user/login');
+      }
 
+      router.get('/logout', isLoggedIn, function (req, res, next) {
+        req.logout();
+        req.flash('success','logged out');
+        res.redirect('/');
+      });
+
+      
 module.exports = router;
