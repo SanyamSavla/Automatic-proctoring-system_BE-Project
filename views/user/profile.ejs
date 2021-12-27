@@ -1,5 +1,7 @@
-{{> header}}
 
+<%- include('../partials/header'); -%>
+
+<link rel="stylesheet" href="/assets/css/form_style.css" type="text/css">
 
 
 <div class="wrapper">
@@ -11,7 +13,7 @@
           <div class="col-xl-5 col-lg-6 col-md-8 px-5">
             <h1 class="text-white">Take a look at your profile!</h1>
             <p class="text-lead text-white">A short descrption of your account.</p>
-            {{#if success}}
+            <% if(success){ %>
             <div class="alert alert-success fade show " role="alert">
               <span class="alert-icon"><i class="ni ni-like-2"></i></span>
               <span class="alert-text mr-2"><strong>Successfully updated!</strong>
@@ -21,13 +23,8 @@
               </button>
             </div>
             <br>
-            {{/if}}
+            <% } %> 
 
-            {{#if msg}}
-            <div class="alert alert-danger">
-              {{msg}}
-            </div>
-            {{/if}}
           </div>
 
         </div>
@@ -47,33 +44,17 @@
         <div class="px-4">
           <div class="row justify-content-center">
             <div class="col-lg-3 order-lg-2">
-              <div class="card-profile-image">
-                <button type="button" data-toggle="modal" data-target="#profilePhotoModal">
-                  <img src="/assets/uploads/{{this.user.rollnumber}}.jpg" class="rounded-circle">
-                </button>
+       <div class="card-profile-image">
+            <!--      <button type="button" data-toggle="modal" data-target="#profilePhotoModal">   -->   
+                  <img src="<%=imageUrl%>" onclick="enlargeImg()" id="img1" >
+              <!--  </button> -->
               </div>
             </div>
-            <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
-              <div class="card-profile-actions py-4 mt-lg-0">
-                <a href="/classroom/userClasses" class="btn btn-sm btn-info  mr-4">Classes</a>
-                <div style="padding-top: 10px;"></div>
-                <a href="/user/logout" class="btn btn-sm btn-default  mr-4">Logout</a>
-                <div style="padding-top: 10px;"></div>
-                <button type="button" class="btn btn-sm btn-danger mb-1 mr-4" data-toggle="modal"
-                  data-target="#deleteProfileModal">
-                  Delete
-                </button>
-              </div>
-            </div>
+           
             <div class="col-lg-4 order-lg-1">
               <div class="card-profile-stats d-flex justify-content-center">
                 <div>
-                  {{#ifCond attendance '==' -1}}
-                  <span class="description">Not in any class</span>
-                  {{else}}
-                  <span class="heading">{{attendance}}%</span>
-                  <span class="description">Attendance</span>
-                  {{/ifCond}}
+                
                 </div>
               </div>
             </div>
@@ -82,12 +63,22 @@
 
 
             <div><span>
-                <h3>{{this.user.name}}<span class="font-weight-light">, {{this.user.class}}
+              
+            <% if(error && error.length > 0){ %>
+              <div class="alert alert-danger" role="alert">
+                <%= error %>
+              </div>
+              <% } %> <% if(success){ %>
+              <div class="alert alert-success" role="alert">
+                <%= success %>
+              </div>
+              <% } %> 
+                <h3>Welcome <%=user.name%><span class="font-weight-light">, 
                     <span style="font-size: 16px;">
                       <button type="button"
                         style="background-color: Transparent;border: none;background-repeat:no-repeat;overflow: hidden;outline:none;"
                         data-toggle="modal" data-target="#editProfileModal">
-                        <i class="ni ni-settings-gear-65"></i>
+                     <!--   <i class="ni ni-settings-gear-65"></i> -->
                       </button>
                     </span>
                   </span>
@@ -96,15 +87,23 @@
               </span></div>
 
 
-            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>{{this.user.rollnumber}}</div>
-            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i>{{this.user.year}}</div>
-            <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i> CSE Student</div>
+            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i><%=user.rollnumber%></div>
+            <div class="h6 font-weight-300"><i class="ni location_pin mr-2"></i><%=user.email%></div>
+            <div class="h6 mt-4"><i class="ni business_briefcase-24 mr-2"></i> <%=user.year%> <%=user.class%></div>
             <div><i class="ni education_hat mr-2"></i>K.J. Somaiya College Of Enginnering</div>
+          </div>
+          <div class="col-lg-4 order-lg-3 text-lg-right align-self-lg-center">
+            <div class="card-profile-actions py-4 mt-lg-0">
+              <div style="padding-top: 10px;"></div>
+              <a href="/user/logout" class="btn btn-sm btn-default  mr-4">Logout</a>
+              <div style="padding-top: 10px;"></div>
+             
+            </div>
           </div>
           <div class="mt-5 py-5 border-top text-center">
             <div class="row justify-content-center">
               <div class="col-lg-9">
-                {{#ifCond attendance '==' -1}}
+         <!--      {{#ifCond attendance '==' -1}}
                 <p>Hey {{this.user.name}}! It appears you are not part a of any class.</mark></p>
                 {{else}}
                 {{#ifCond attendance '<' 75}} <p>Hey {{this.user.name}}! It appears you have {{attendance}}% attendance
@@ -114,6 +113,7 @@
                       style="background-color:lawngreen;">ABOVE THE 75% LIMIT.</p>
                   {{/ifCond}}
                   {{/ifCond}}
+                --> 
               </div>
             </div>
           </div>
@@ -271,3 +271,35 @@
     </div>
   </div>
 </div>
+
+
+
+<script>
+
+
+  // Get the img object using its Id
+  img = document.getElementById("img1");
+  var imgEnlarged = 0;
+  // Function to increase image size
+  function enlargeImg() {
+    // Set image size to 1.5 times original
+   
+    if (imgEnlarged==0){ //Basic function if no enlarged, enlarge click element
+    img.style.transform = "scale(5)";
+    imgEnlarged = 1;
+  }
+  else if (imgEnlarged==1) { //If an image is enlarged, is it this one? If so, resize image
+    img.style.transform = "scale(1)";
+    imgEnlarged = 0;
+    
+  }
+    // Animation effect 
+    //img.style.transition = "transform 0.25s ease";
+  }
+  // Function to reset image size
+  function resetImg() {
+    // Set image size to original
+    
+    img.style.transition = "transform 0.25s ease";
+  }
+</script>

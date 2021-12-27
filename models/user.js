@@ -8,6 +8,7 @@ const userschema = new mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
+    
     name: {type: String, required: true},
     class:{type: String, required: false},
     rollnumber: {type: String, required: false},

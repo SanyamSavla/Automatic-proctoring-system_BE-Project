@@ -1,0 +1,348 @@
+<%- include('../partials/header'); -%>
+
+<link rel="stylesheet" href="/assets/css/form_style.css" type="text/css">
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/css/materialize.min.css">
+
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0/js/materialize.min.js"></script>
+
+<!-- Main content -->
+<div class="main-content">
+    <!-- Header -->
+    <div class="header bg-gradient-primary py-7 py-lg-8 pt-lg-9">
+        <div class="container">
+            <div class="header-body text-center mb-7">
+                <div class="row justify-content-center">
+                    <div class="col-xl-5 col-lg-6 col-md-8 px-5">
+                        <h1 class="text-white">Upload an image</h1>
+                        <p class="text-lead text-white">Please upload an image which contains your face clearly for
+                            training the face recognition model.</p>
+                        <p style="color: white;">Note: The uploaded picture will also be used as your default profile
+                            picture</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="separator separator-bottom separator-skew zindex-100">
+            <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
+                xmlns="http://www.w3.org/2000/svg">
+                <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+            </svg>
+        </div>
+    </div>
+    <!-- Page content -->
+    <div class="container mt--8 pb-5">
+        <!-- Table -->
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card bg-secondary border-0">
+                    <div class="card-body px-lg-5 py-lg-5">
+                        <div class="text-center text-muted mb-4">
+                            <small>Fill in your details.
+                                <br>
+                                Image name should be of the form rollnumber.jpg
+                            </small>
+                            <% if(error && error.length > 0){ %>
+                                <div class="alert alert-danger" role="alert">
+                                  <%= error %>
+                                </div>
+                                <% } %>
+
+                                <% if(success && success.length > 0){ %>
+                                    <div class="alert alert-success" role="alert">
+                                      <%= success %>
+                                    </div>
+                                    <% } %>
+                        </div>
+                        <form method="POST" enctype="multipart/form-data" action="/user/u">
+                            <div class="form-group">
+                                <div class="input-group input-group-merge input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="ni ni-cloud-upload-96"></i></span>
+                                    </div>
+                                    <input class="form-control" name="photo" placeholder="photo" type="file">
+                                </div>
+                            </div>
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary mt-4">Upload Photo</button>
+                            </div>
+
+
+                            <div class="form-group">
+                                <label for="uploadFile">Upload</label>
+                                <input type="file" class="form-control" id="uploadFile" ref="file" @change="onUploadFile">
+                                <p class="text error">{{ uploadFileError }}</p>
+                            </div>
+                            <button type="submit" class="btn btn-primary" @click="submit">Submit</button>
+
+
+                      
+                    </div>
+                    
+                    <div id="click">Capture</div>
+                    <button id="onsubmit"> Save  </button>
+                     
+                       <a href="#" id="download-photo" download="selfie.png" target="_blank" title="Save Photo" class="d-none"><i class="material-icons">file_download</i></a>  
+                </form>
+                <video id="webcam" autoplay playsinline width="640" height="480"></video>
+               
+                <button id="ta_button" type="text" disabled>Take Picture</button>
+                
+                           <!-- <canvas id="canvas" class="d-none"></canvas>
+                 Buttons -->
+<style>
+
+
+    video,
+canvas,
+#cloudinary_photo {
+  border: 1px solid black;
+  background-color: #efefef;
+}
+
+#camera_upload > p {
+  font-size: 0.9rem;
+  color: #333;
+  margin: 0px 0px 0px 105px;
+}
+
+#uploadBtn {
+  margin: 20px 0 0 105px;
+}
+
+#upload_response {
+  border: 1px solid black;
+  width: 100%;
+  min-height: 100px;
+  white-space: pre;
+  padding: 10px;
+  box-sizing: border-box;
+}
+
+</style>
+                <button id="start_camera_button" type="text">Start Camera</button>
+                <button id="take_picture_button" type="text" disabled>Take Picture</button>
+                <button id="clear_picture_button" type="text" disabled>Clear Picture</button>
+                <button id="upload_button" type="text" disabled>Upload Picture</button>
+                <br />
+                 <!-- Video -->
+                <video id="video_camera">Video stream not available.</video><br />
+                
+                <!-- Canvas -->
+                <canvas id="canvas" style="width: 640; height:480"></canvas><br />
+                <img id="cloudinary_photo"><br />
+                <textarea id="upload_response" readonly></textarea>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script src="/assets/js/upload.js"></script>
+<script>
+//   <a href="#" id="take-photo" title="Take Photo"><i class="material-icons">camera_alt</i></a>
+//function setup() {
+  //      noCanvas();
+ //       const video = createCapture(VIDEO);
+//        video.size(320, 240);
+  //      const button = document.getElementById('submit');
+    //    button.addEventListener('click', async event => {
+      //      video.loadPixels();
+        //    const image64 = video.canvas.toDataURL();
+          //  const data = { image64 };
+            //const options = {
+              //method: 'POST',
+//              headers: {
+ //               'Content-Type': 'application/json'
+  //            },
+   //           body: JSON.stringify(data)
+    //        };
+    //     const response = await fetch('/api', options);
+           
+    //     const json = await response.json();
+     //      console.log(json);
+     //     });
+   //   }
+
+const webcamElement = document.getElementById('webcam');
+const canvasElement = document.getElementById('canvas');
+//const snapSoundElement = document.getElementById('snapSound');
+const webcam = new Webcam(webcamElement, 'image', canvasElement, null);
+//new fresh
+
+
+///
+
+$("#onsubmit").click(function () {
+   
+    try {
+     // setLoading(true);
+      
+      const image =  axios.post('http://localhost:3000/user/u');
+      console.log('...');
+    
+    } catch (err) {
+      console.error(err);
+    }
+
+});
+
+const onSuubmit = async () => {
+    let image = webcam.snap();
+    console.log("image");
+    const formData = new FormData();
+    formData.append('file', image);
+    formData.append('upload_preset', preset);
+    try {
+      setLoading(true);
+      const res =  axios.post(url, formData);
+      const imageUrl = res.data.secure_url;
+      const image =  axios.post('http://localhost:3000/user/upload', {
+        imageUrl
+      });
+      console.log('...',imageUrl);
+      setLoading(false);
+      setImage(image.data);
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+function afterTakePhoto(){
+    webcam.stop();
+    $('#canvas').removeClass('d-none');
+    $('#take-photo').addClass('d-none');
+    $('#exit-app').removeClass('d-none');
+    $('#download-photo').removeClass('d-none');
+    $('#resume-camera').removeClass('d-none');
+    $('#cameraControls').removeClass('d-none');
+}
+
+webcam.start()
+  .then(result =>{
+    console.log("webcam started");
+  })
+  .catch(err => {
+    console.log(err);
+});
+
+function saveSnap() {
+   // let picture = let picture =
+    webcam.snap(function(data_uri){
+        document.getElementById('').innerHTML='<img id= "webcam" src="'+data_uri+'">';
+    });
+    console.log(data_uri)
+    //document.querySelector('#download-photo').href = picture;
+  };
+
+var base64 =document.getElementById("webcam").src;
+webcam.upload(base64,'function',function(code,text){
+    alert('Saved Success');
+    document.location.href="image";
+});
+
+
+$('#cameraFlip').click(function() {
+    webcam.flip();
+    webcam.start();
+  });
+
+  navigator.mediaDevices.getUserMedia(this.getMediaConstraints())
+  .then(stream => {
+    this._webcamElement.srcObject = stream;
+    this._webcamElement.play();
+  })
+  .catch(error => {
+    //...
+  });
+</script>
+
+
+
+
+
+
+<script>
+
+  //  import * as Webcam from 'webcam-easy';
+            
+    export default {
+        data(){
+            return {
+                
+                webcam:null,
+                string:null
+            }
+        },
+        methods: {
+            resetErrors(){
+                
+                this.uploadFileError = '';
+              
+            },
+            resetInputs(){
+               
+                this.uploadFile = '';
+               
+            },
+            validate(){
+                this.isValid = true;
+                this.resetErrors();
+    
+            },
+            async submit() {
+                this.validate();
+                if(!this.isValid)
+                    return;
+                const formData = new FormData();
+                
+                formData.append('file',this.uploadFile);
+    
+               // const response = await Api.registerUser(formData);
+                //localStorage.setItem("token",response.token);
+                //console.log(response);
+                //this.$store.commit('setUser',{
+               //     user: response.user
+               // });
+             //   this.$store.commit('setAuthenticated', { isAuthenticated: true });
+             //   this.$store.commit('setRole',{ role: 'user' });
+              //  this.$router.replace('/user/home');
+            },
+            onUploadFile(){
+                this.uploadFile = this.$refs.file.files[0];
+            },
+            Capture(){
+                let picture = this.webcam.snap();
+                this.picture = picture;  
+                this.webcam.stop();   
+            }
+        },
+        mounted(){
+            const webcamElement = document.getElementById('webcam');
+            const canvasElement = document.getElementById('canvas');
+            const webcam = new Webcam(webcamElement, 'user', canvasElement, null);
+            this.webcam = webcam;
+            console.log(webcam);
+            navigator.mediaDevices.getUserMedia(this.getMediaConstraints())
+                .then(stream => {
+                    this._webcamElement.srcObject = stream;
+                    this._webcamElement.play();
+                })
+                .catch(error => {
+                    //...
+                });
+            webcam.start()
+            .then(result =>{
+                console.log("webcam started");
+            })
+            .catch(err => {
+                console.log(err);
+            });
+        }
+
+        
+    }
+    </script>
+    

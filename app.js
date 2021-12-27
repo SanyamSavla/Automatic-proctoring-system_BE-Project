@@ -15,16 +15,20 @@ flash = require('connect-flash');
 const validator= require('express-validator');
 var MongoStore= require('connect-mongo');
 var app = express();
-
+const cors = require('cors');
 require('./config/passport')(passport);
-
+const axios = require('axios');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
 routes = require("./routes");
 //const db=require('./models');
 //const routes = require("./routes");
-
+//const multer = require("multer");
+const cloudinary = require("cloudinary");
+const cloudinaryStorage = require("multer-storage-cloudinary");
 //mongoose.connect('mongodb://localhost:27017/attendance_portal',{useNewUrlParser: true, useUnifiedTopology: true})
+const preset='ml_default';
+const url="CLOUDINARY_URL=cloudinary://838184683621473:BQkNqSaTW59pwF8lDfGlaFIyPzo@dn24716of/image/upload";
 
 mongoose.Promise = global.Promise;
 const databaseUri =process.env.MONGODB_URI ;
@@ -47,6 +51,7 @@ app.set("view engine", "ejs");
 // Require static assets from public folder
 app.use(express.static((__dirname, 'public')));
 app.use(methodOverride("_method"));
+app.use(cors());
 app.use(cookieParser(process.env.globalSecret));
 app.use(
   require("express-session")({
@@ -74,7 +79,7 @@ app.use(async function (req, res, next) {
   //res.locals.cart = cartListing(cart);
   //res.locals.custom_cart = customCartListing(custom_cart);
   //   console.log(res.locals.custom_cart);
-  //res.locals.currentUser = req.user;
+  res.locals.user = req.user;
   res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");
   res.locals.warning = req.flash("warning");
