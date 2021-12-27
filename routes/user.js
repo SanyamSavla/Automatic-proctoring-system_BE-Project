@@ -33,13 +33,12 @@ app.use(express.static('uploads'));
 router
 	.route("/register")
 .get((req, res, next) => {
-		try {
-			var message = req.flash("error");
-			return res.render("user/register", {
-				title: "Signup",
-                message: message,
-                hasError: message.length > 0,
-			});
+		try {   var message = req.flash("error");
+        return res.render("user/register", {
+            title: "Signup",
+            message: message,
+            hasError: message.length > 0,
+        });
 		} catch (err) {
 			return next({
 				status: 400,
@@ -48,21 +47,28 @@ router
 		}
 	})
 
-.post(async(req, res,next) => {
-		try {
-         //   let message = req.flash();
+.post((req, res,next) => {
+    
+    userModel.countDocuments( userModel.findOne({rollnumber: req.body.rollnumber}), function(err, count) {
+        //if (err) { return handleError(err) } //handle possible errors
+        if(count==1){
+            req.flash("error", "Same account exists");
+            res.redirect("back");
            
+            console.log("backkk");
+        }
+        else{
             console.log("111");
-			const newUser = new userModel({
-				name: req.body.name,
-				class: req.body.class,
-				contact: req.body.contact,
+            const newUser = new userModel({
+                name: req.body.name,
+                class: req.body.class,
+                contact: req.body.contact,
                 rollnumber: req.body.rollnumber,
                 email:req.body.email,
                 year:req.body.year,
                 password:req.body.password,
-			});
-            await newUser.save();
+            });
+             newUser.save();
             req.flash("success", "Successfully Updated!");
             res.redirect("/user/login/");
             console.log("redirected");
@@ -84,9 +90,16 @@ router
                 .catch(err => console.log(err));
             });
         });
-
+        }
+        
+    })
+		try {
+         //   let message = req.flash();
+         
+            
 		} catch (err) {
-            req.flash("error", err.message);
+            console.log("eee",err.message);
+            req.flash("error", "Same account exists");
 		    res.redirect("back");
             
             //message="erorr";
@@ -173,7 +186,7 @@ router.get("/login", (req, res, next) => {
         var messages = req.flash('error');
      //   var count=   imgModel.findOne({user: req.user._id}).count();  
        
-             imgModel.countDocuments({}, function(err, count) {
+        imgModel.countDocuments( imgModel.findOne({user: req.user._id}), function(err, count) {
         //if (err) { return handleError(err) } //handle possible errors
         if(count==1){
             req.flash("success", "Successfully Updated!");
@@ -185,7 +198,7 @@ router.get("/login", (req, res, next) => {
             res.render('user/upload', { messages: messages, hasErrors: messages.length > 0 });
 
         }
-        //and do some other fancy stuff
+        
     })
       });    
 
