@@ -122,7 +122,7 @@ function uploadPhoto() {
 
       console.log("ssss",response.secure_url);
       imageUrl=response.secure_url;
-      upload_response.value += this.responseText + "\n";
+      //upload_response.value += this.responseText + "\n";
       axios.post('http://localhost:3000/user/upload', {
         imageUrl
       });

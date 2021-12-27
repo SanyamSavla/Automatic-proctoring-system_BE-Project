@@ -38,12 +38,12 @@
         <!-- Table -->
         <div class="row justify-content-center">
             <div class="col-lg-6 col-md-8">
-                <div class="card bg-secondary border-0">
+                <div class="card bg-secondary border-0" style="width: 640px;">
                     <div class="card-body px-lg-5 py-lg-5">
                         <div class="text-center text-muted mb-4">
-                            <small>Fill in your details.
+                            <small>
                                 <br>
-                                Image name should be of the form rollnumber.jpg
+                             
                             </small>
                             <% if(error && error.length > 0){ %>
                                 <div class="alert alert-danger" role="alert">
@@ -57,42 +57,53 @@
                                     </div>
                                     <% } %>
                         </div>
-                        <form method="POST" enctype="multipart/form-data" action="/user/u">
+                        
+                            <!-- -->
                             <div class="form-group">
                                 <div class="input-group input-group-merge input-group-alternative">
                                     <div class="input-group-prepend">
-                                        <span class="input-group-text"><i class="ni ni-cloud-upload-96"></i></span>
+                                    <!--     <span class="input-group-text"><i class="ni ni-cloud-upload-96"></i></span> -->
                                     </div>
-                                    <input class="form-control" name="photo" placeholder="photo" type="file">
+                                  <!--   <input class="form-control" name="photo" placeholder="photo" type="file"> -->
                                 </div>
                             </div>
                             <div class="text-center">
-                                <button type="submit" class="btn btn-primary mt-4">Upload Photo</button>
+                            <!--      <button type="submit" class="btn btn-primary mt-4">Upload Photo</button>-->
                             </div>
 
 
                             <div class="form-group">
                                 <label for="uploadFile">Upload</label>
-                                <input type="file" class="form-control" id="uploadFile" ref="file" @change="onUploadFile">
-                                <p class="text error">{{ uploadFileError }}</p>
+                               <!--   <input type="file" class="form-control" id="uploadFile" ref="file" @change="onUploadFile">
+                                <p class="text error"></p> -->
                             </div>
-                            <button type="submit" class="btn btn-primary" @click="submit">Submit</button>
-
-
+                           
+                            <button class="btn btn-primary" id="start_camera_button" type="text">Start Camera</button>
+                            <button class="btn btn-primary"id="take_picture_button" type="text" disabled>Take Picture</button>
+                            <button class="btn btn-primary" id="clear_picture_button" type="text" disabled>Clear Picture</button>
+                            <button class="btn btn-primary" id="upload_button" type="text" disabled>Confirm Picture</button>
                       
                     </div>
                     
-                    <div id="click">Capture</div>
-                    <button id="onsubmit"> Save  </button>
+                    <video id="video_camera">Video stream not available.</video><br />
+                
+                 <!-- Canvas -->
+                 <canvas id="canvas" style="width: 640; height:480"></canvas><br />
+                 <img id="cloudinary_photo"><br />
+                  <!--<textarea id="upload_response" readonly></textarea>-->
+
+                 <form method="POST" enctype="multipart/form-data" action="/user/u">
+                    <button class="btn btn-primary" id="onsubmit"> Save and Continue  </button>
                      
                        <a href="#" id="download-photo" download="selfie.png" target="_blank" title="Save Photo" class="d-none"><i class="material-icons">file_download</i></a>  
                 </form>
-                <video id="webcam" autoplay playsinline width="640" height="480"></video>
-               
-                <button id="ta_button" type="text" disabled>Take Picture</button>
+            <!--      <video id="webcam" autoplay playsinline width="640" height="480"></video>
+              Video -->
                 
-                           <!-- <canvas id="canvas" class="d-none"></canvas>
-                 Buttons -->
+            
+                
+                          <canvas id="canvas" class="d-none"></canvas>
+                
 <style>
 
 
@@ -123,18 +134,9 @@ canvas,
 }
 
 </style>
-                <button id="start_camera_button" type="text">Start Camera</button>
-                <button id="take_picture_button" type="text" disabled>Take Picture</button>
-                <button id="clear_picture_button" type="text" disabled>Clear Picture</button>
-                <button id="upload_button" type="text" disabled>Upload Picture</button>
+               
                 <br />
-                 <!-- Video -->
-                <video id="video_camera">Video stream not available.</video><br />
-                
-                <!-- Canvas -->
-                <canvas id="canvas" style="width: 640; height:480"></canvas><br />
-                <img id="cloudinary_photo"><br />
-                <textarea id="upload_response" readonly></textarea>
+               
                 </div>
             </div>
         </div>
