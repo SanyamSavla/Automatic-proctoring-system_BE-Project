@@ -24,6 +24,10 @@ routes = require("./routes");
 //const db=require('./models');
 //const routes = require("./routes");
 //const multer = require("multer");
+//const cv = require('opencv4nodejs');
+const server = require('http').Server(app);
+const io = require('socket.io')(server);
+  
 const cloudinary = require("cloudinary");
 const cloudinaryStorage = require("multer-storage-cloudinary");
 //mongoose.connect('mongodb://localhost:27017/attendance_portal',{useNewUrlParser: true, useUnifiedTopology: true})

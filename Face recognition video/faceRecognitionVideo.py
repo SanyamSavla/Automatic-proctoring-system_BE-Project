@@ -3,6 +3,7 @@ import cv2
 import numpy as np
 
 
+
 #webcam #0
 video_capture = cv2.VideoCapture(0)
 
@@ -15,7 +16,7 @@ raj_image = face_recognition.load_image_file("Raj.jpg")
 raj_face_encoding = face_recognition.face_encodings(raj_image)[0]
 
 # Loading sample picture and encoding it. subject 3
-sanyam_image = face_recognition.load_image_file("Sanyam.jpg")
+sanyam_image = face_recognition.load_image_file("001.png")
 sanyam_face_encoding = face_recognition.face_encodings(sanyam_image)[0]
 
 # Creating arrays of known face encodings and their names
@@ -25,7 +26,7 @@ known_face_names = ["Parshva","Raj","Sanyam"]
 while True:
     # Taking a single frame of video
     ret, frame = video_capture.read()
-
+    
     # Convert the image from BGR color to RGB color for face_recognition
     rgb_frame = frame[:, :, ::-1]
 
@@ -63,4 +64,5 @@ while True:
 
 # Release handle to the webcam
 video_capture.release()
+
 cv2.destroyAllWindows()

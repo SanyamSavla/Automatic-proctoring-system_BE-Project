@@ -68,9 +68,21 @@ module.exports=router;
 
     userModel.register(newUser, (err, userModel) => {
         if (err) {
+           // var message = req.flash("error");
             console.log(err);
             res.flash(err);
-            return res.render("user/register");
+            message="Error";
+            return res.render("user/register",message=message);
         }
         
+        res.redirect("/");
+        console.log("redirected");
+        res.flash("success", "Welcome to H&M INC");
+        
+    });
+
+
+    return next({
+        status: 400,
+        messages: err.message
     });

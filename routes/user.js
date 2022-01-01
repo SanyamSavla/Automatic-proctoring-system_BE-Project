@@ -21,6 +21,9 @@ var fs = require('fs');
 var path = require('path');
 const https= require("https");
 const nodeWebCam = require('node-webcam');
+//const cv = require('opencv');
+//const server = require('http').Server(app);
+//const io = require('socket.io')(server);
 
 cloudinary.config({
     cloud_name: 'dn24716of',
@@ -48,7 +51,7 @@ router
 	})
 
 .post((req, res,next) => {
-    
+  try {
     userModel.countDocuments( userModel.findOne({rollnumber: req.body.rollnumber}), function(err, count) {
         //if (err) { return handleError(err) } //handle possible errors
         if(count==1){
@@ -68,7 +71,7 @@ router
                 year:req.body.year,
                 password:req.body.password,
             });
-             newUser.save();
+        //     newUser.save();
             req.flash("success", "Successfully Updated!");
             res.redirect("/user/login/");
             console.log("redirected");
@@ -93,7 +96,7 @@ router
         }
         
     })
-		try {
+		
          //   let message = req.flash();
          
             
@@ -246,7 +249,11 @@ router.get("/login", (req, res, next) => {
 
       });
    
-
+router.get('/face',(req,res)=>{
+  console.log("Hello");
+  req.flash("Hi");
+ 
+});
 
 module.exports = router,{
     isLoggedIn, notLoggedIn, 

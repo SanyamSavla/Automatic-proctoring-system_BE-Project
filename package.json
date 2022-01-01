@@ -47,6 +47,7 @@
     "razorpay": "^2.0.6",
     "req-flash": "0.0.3",
     "shortid": "^2.2.15",
+    "socket.io": "^4.4.0",
     "time-stamp": "^2.2.0",
     "webcam-easy": "^1.0.5",
     "whatwg-fetch": "^3.0.0"
