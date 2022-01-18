@@ -6,8 +6,11 @@ import pandas as pd
 import pymongo
 import flask
 from flask import Flask, request, render_template
-
-app = Flask(__name__)
+from pymongo import MongoClient 
+from mongo import store_db
+import sys
+from bson.objectid import ObjectId
+# app = Flask(__name__)
 
 
 #webcam #0
@@ -28,37 +31,46 @@ video_capture = cv2.VideoCapture(0)
 # Creating arrays of known face encodings and their names
 #known_face_encodings = [sanyam_face_encoding]
 #known_face_names = ["Sanyam"]
-app.config['MONGO_URI'] = 'mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test'
+#app.config['MONGO_URI'] = 'mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test'
 
-client = pymongo.MongoClient("mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test") 
+#client = pymongo.MongoClient("mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test") 
 # Database Name
-db = client["test"]
+#db = client["test"]
 
-x=db['images'].find({},{'user':1,'imageUrl':1})
+#x=db['images'].find({},{'user':1,'imageUrl':1})
 
-y=db['users'].find()
+#y=db['users'].find()
+conn = MongoClient("mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test") 
+db = conn.test.users 
+#result=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "rollnumber": 1})
+#print(result)
 
+r=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "rollnumber": 1}).distinct("rollnumber")
+print(r[0])
+name=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "name": 1}).distinct("name")
+print(name[0])
 
+sname=name[0]
 known_face_encodings = []
 known_face_roll_no = []
 df = pd.read_excel("students" + os.sep + "students.xls")
 known_face_names=[]
 
-for key, row in df.iterrows():
-    rollnumber = row["rollnumber"]
-    name = row["name"]
-    image_path = row["image"]
+#for key, row in df.iterrows():
+    #rollnumber = row["rollnumber"]
+    #name = row["name"]
+    #image_path = row["image"]
     #classid=row["classid"]
     #roll_record[rollnumber] = name
-    try:
-        student_image = face_recognition.load_image_file("../uploads" + os.sep + rollnumber)
-        student_face_encoding = face_recognition.face_encodings(student_image)[0]
-        known_face_encodings.append(student_face_encoding)
-        known_face_names.append(name)
-    except Exception as e:
+    #continue         
+try:
+    student_image = face_recognition.load_image_file("./uploads" + os.sep + r[0])
+    student_face_encoding = face_recognition.face_encodings(student_image)[0]
+    known_face_encodings.append(student_face_encoding)
+    known_face_names.append(name[0])
+except Exception as e:
         print(e)
-        print("../uploads" + os.sep +rollnumber+" Student has not uploaded an image")
-        continue         
+        #print("../uploads" + os.sep +rollnumber+" Student has not uploaded an image")       
 
 k=0
 
@@ -102,10 +114,14 @@ while True:
     cv2.imshow('Video', frame)
 
     # press 'q' on the keyboard to quit
-    if cv2.waitKey(1) & 0xFF == ord('q'):
+    if (cv2.waitKey(1) & 0xFF == ord('q')) or (name==sname):
+        print(sname)
         break
 
 # Release handle to the webcam
 video_capture.release()
 
 cv2.destroyAllWindows()
+
+
+print("My name is"+name[0])

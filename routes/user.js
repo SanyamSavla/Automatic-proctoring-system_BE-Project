@@ -24,6 +24,8 @@ const nodeWebCam = require('node-webcam');
 //const cv = require('opencv');
 //const server = require('http').Server(app);
 //const io = require('socket.io')(server);
+const {spawn} = require('child_process');
+const request = require('request');
 
 cloudinary.config({
     cloud_name: 'dn24716of',
@@ -32,6 +34,51 @@ cloudinary.config({
     });
 
 app.use(express.static('uploads'));
+
+router.get('/test2/:id', isLoggedIn, function (req, res, next) {
+    try{
+   var dataToSend;
+   var url = 'http://127.0.0.1:5000/camera/'+req.user._id.toString() ;
+   request(url, function (error, response, body) {
+    console.log("b",)
+  });
+
+    res.render('user/camera');
+     } catch (err) {
+      return next({
+          status: 400,
+          message: err.message
+      });
+  }
+
+});
+
+router.get("/test", (req, res, next) => {
+  try {
+    var dataToSend;
+    console.log("here?1")
+    // spawn new child process to call the python script
+    const python = spawn('python', ['Python/test.py']);
+    console.log("here?2")
+    // collect data from script
+    python.stdout.on('data', function (data) {
+     console.log('Pipe data from python script ...');
+     dataToSend = data.toString();     
+    });
+    // in close event we are sure that stream from child process is closed
+    python.on('close', (code) => {
+    console.log(`child process close all stdio with code ${code}`);
+    // send data to browser
+    res.send(dataToSend)
+    });
+
+  } catch (err) {
+      return next({
+          status: 400,
+          message: err.message
+      });
+  }
+});
 
 router
 	.route("/register")
@@ -234,7 +281,7 @@ router.get("/login", (req, res, next) => {
                     response.pipe(localpath);
                 })
           }
-          saveimage(req.body.imageUrl,"./uploads/"+req.user.rollnumber+".png")
+          saveimage(req.body.imageUrl,"./Python/uploads/"+req.user.rollnumber+".png")
         //  let data = fs.readFileSync(path.join(__dirname + '../../uploads/'))
         } catch (err) {
           console.error('Something went wrong', err);
