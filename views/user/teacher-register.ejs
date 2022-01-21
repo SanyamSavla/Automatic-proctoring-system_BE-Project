@@ -1,0 +1,260 @@
+
+<%- include('../partials/header'); -%>
+
+<link rel="stylesheet" href="/assets/css/form_style.css" type="text/css">
+
+<!-- Main content -->
+<div class="main-content">
+    <!-- Header -->
+    <div class="header bg-gradient-primary py-7 py-lg-8 pt-lg-9">
+        <div class="container">
+            <div class="header-body text-center mb-7">
+                <div class="row justify-content-center">
+                    <div class="col-xl-5 col-lg-6 col-md-8 px-5">
+                        <h1 class="text-white">Teacher- REGISTER</h1>
+                        <p class="text-lead text-white">Please fill in your appropriate details </p>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="separator separator-bottom separator-skew zindex-100">
+            <svg x="0" y="0" viewBox="0 0 2560 100" preserveAspectRatio="none" version="1.1"
+                xmlns="http://www.w3.org/2000/svg">
+                <polygon class="fill-default" points="2560 0 2560 100 0 100"></polygon>
+            </svg>
+        </div>
+    </div>
+    <!-- Page content -->
+    <div class="container mt--8 pb-5">
+        <!-- Table -->
+        <div class="row justify-content-center">
+            <div class="col-lg-6 col-md-8">
+                <div class="card bg-secondary border-0">
+                    <div class="card-body px-lg-5 py-lg-5">
+                        <div class="text-center text-muted mb-4">
+                            <small>Fill in your details.</small>
+                           
+                            <div class="container">
+                                <% if(error && error.length > 0){ %>
+                                <div class="alert alert-danger" role="alert">
+                                  <%= error %>
+                                </div>
+                                <% } %> <% if(success && success.length > 0){ %>
+                                <div class="alert alert-success" role="alert">
+                                  <%= success %>
+                                </div>
+                                <% } %> <% if(warning && warning.length > 0){ %>
+                                <div class="alert alert-warning" role="alert">
+                                  <%= warning %>
+                                </div>
+                                <% } %> <% if(info && info.length > 0){ %>
+                                <div class="alert alert-info" role="alert">
+                                  <%= info %>
+                                </div>
+                                <% } %>
+                              </div>
+                        </div>
+                        <form name="myform" action="/user/teacher-register" method="POST">
+                            
+                            <div class="form-group">
+                                <div class="input-group input-group-merge input-group-alternative mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="ni ni-circle-08"></i></span>
+                                    </div>
+                   
+                                    <input class="form-control" name="name" placeholder="Teacher's Name" type="text" id="username" 
+                                        style="background-color: rgb(232, 240, 254);">
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group input-group-merge input-group-alternative mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="ni ni-headphones"></i></span>
+                                    </div>
+                                    <input type="tel" name="contactNum" class="form-control" maxlength=10 id="contact"  placeholder="Contact" 
+                                       
+                                        style="background-color: rgb(232, 240, 254);"
+                                        >
+                                </div>
+                                
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group input-group-merge input-group-alternative mb-3">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="ni ni-email-83"></i></span>
+                                    </div>
+                                    <input class="form-control" name="email" placeholder="Email" id="email" type="email"
+                                       
+                                        style="background-color: rgb(232, 240, 254);"
+                                        >
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <div class="input-group input-group-merge input-group-alternative">
+                                    <div class="input-group-prepend">
+                                        <span class="input-group-text"><i class="ni ni-lock-circle-open"></i></span>
+                                    </div>
+                                    <input class="form-control" name="password" placeholder="Password" type="password" id="password">
+                                </div>
+                            </div>
+
+                        
+
+                            <div class="text-center">
+                                <button type="submit" class="btn btn-primary mt-4">Create account</button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script>
+
+    
+export default {
+    data(){
+        return {
+            username: '',
+            fullName: '',
+            email:'',
+            contact: '',
+            city: '',
+            password: '',
+            confirmPassword: '',
+            uploadFile: null,
+            usernameError: '',
+            fullNameError: '',
+            emailError: '',
+            contactError: '',
+            cityError: '',
+            passwordError: '',
+            confirmPasswordError: '',
+            uploadFileError: '',
+            isValid: true,
+            webcam:null,
+            string:null
+        }
+    },
+    methods: {
+        resetErrors(){
+            this.usernameError = '';
+            this.fullNameError = '';
+            this.emailError = '';
+            this.contactError = '';
+            this.passwordError = '';
+            this.confirmPasswordError = '';
+            this.uploadFileError = '';
+            this.cityError = '';
+        },
+        resetInputs(){
+            this.username = '';
+            this.fullName = '';
+            this.email = '';
+            this.contact = '';
+            this.password = '';
+            this.confirmPassword = '';
+            this.uploadFile = '';
+            this.city = '';
+        },
+        validate(){
+            this.isValid = true;
+            this.resetErrors();
+
+            if(this.username===''){
+                this.usernameError = 'Please enter a valid username';
+                this.isValid = false;
+            }
+
+            if(this.fullName===''){
+                this.fullNameError = 'Please enter your full name';
+                this.isValid = false;
+            }
+
+            const emailPattern = new RegExp(/^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)*$/);
+            if(!emailPattern.test(this.email)){
+                this.emailError = 'Please enter a valid email address';
+                this.isValid = false;
+            }
+
+            if(this.contact===''){
+                this.contactError = 'Please enter your phone number';
+                this.isValid = false;
+            }
+            if(this.city === ''){
+                this.cityErorr = 'Please enter your city name';
+                this.isValid = false;
+            }
+
+            if(this.password==='' || this.password.length < 8){
+                this.passwordError = 'Please enter a valid password';
+                this.isValid = false;
+            }
+            if(this.confirmPassword!==this.password){
+                this.confirmPasswordError = 'Passwords do not match';
+                this.isValid = false;
+            }
+            if(!this.uploadFile){
+                this.uploadFileError = 'Please add an id proof image';
+                this.isValid = false;
+            }
+        },
+        async submit() {
+            this.validate();
+            if(!this.isValid)
+                return;
+            const formData = new FormData();
+            
+            formData.append('name',this.username);
+            formData.append('username',this.fullName);
+            formData.append('email',this.email);
+            formData.append('password',this.password);
+            formData.append('contactNum',this.contact);
+            formData.append('city',this.city);
+            formData.append('picture',this.picture);
+            formData.append('file',this.uploadFile);
+
+            const response = await Api.registerUser(formData);
+            localStorage.setItem("token",response.token);
+            console.log(response);
+            this.$store.commit('setUser',{
+                user: response.user
+            });
+            this.$store.commit('setAuthenticated', { isAuthenticated: true });
+            this.$store.commit('setRole',{ role: 'user' });
+            this.$router.replace('/user/home');
+        },
+        onUploadFile(){
+            this.uploadFile = this.$refs.file.files[0];
+        },
+        Capture(){
+            let picture = this.webcam.snap();
+            this.picture = picture;  
+            this.webcam.stop();   
+        }
+    },
+    mounted(){
+        const webcamElement = document.getElementById('webcam');
+        const canvasElement = document.getElementById('canvas');
+        const webcam = new Webcam(webcamElement, 'user', canvasElement, null);
+        this.webcam = webcam;
+        console.log(webcam);
+        webcam.start()
+        .then(result =>{
+            console.log("webcam started");
+        })
+        .catch(err => {
+            console.log(err);
+        });
+    }
+}
+
+</script>
+
+
+
+<%- include('../partials/footer'); -%>

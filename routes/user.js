@@ -3,6 +3,7 @@ const express = require('express');
       passport = require('passport');
       userModel = require('../models/user');
       imgModel = require('../models/image');
+      teacherModel= require('../models/teacher');
 //var classModel = require('../models/class');
 const bcrypt = require('bcryptjs');  
    //  multer = require('multer');
@@ -81,6 +82,7 @@ router.get("/test", (req, res, next) => {
       });
   }
 });
+
 
 router
 	.route("/register")
@@ -166,6 +168,93 @@ router
 		}
 	});
 
+
+  //Teacher Register --
+
+  router
+	.route("/teacher-register")
+.get((req, res, next) => {
+		try {   var message = req.flash("error");
+        return res.render("user/teacher-register", {
+            title: "Signup",
+            message: message,
+            hasError: message.length > 0,
+        });
+		} catch (err) {
+			return next({
+				status: 400,
+				message: err.message
+			});
+		}
+	})
+
+.post((req, res,next) => {
+  try {
+    teacherModel.countDocuments( teacherModel.findOne({email: req.body.email}), function(err, count) {
+        //if (err) { return handleError(err) } //handle possible errors
+        if(count==1){
+            req.flash("error", "Same account exists");
+            res.redirect("back");
+           
+            console.log("backkk");
+        }
+        else{
+            console.log("111");
+            const newTeacher = new teacherModel({
+                name: req.body.name,
+                
+                contactNum: req.body.contactNum,
+                
+                email:req.body.email,
+                
+                password:req.body.password,
+            });
+        //     newUser.save();
+            req.flash("success", "Successfully Updated!");
+            res.redirect("/user/login/");
+            console.log("redirected");
+         //   req.flash("message", "Welcome");
+            
+         bcrypt.genSalt(10, (err, salt) => {
+            bcrypt.hash(newTeacher.password, salt, (err, hash) => {
+              if (err) throw err;
+              newTeacher.password = hash;
+              newTeacher
+                .save()
+                .then(user => {
+                  req.flash(
+                    'success',
+                    'You are now registered and can log in'
+                  );
+                  res.redirect('/users/login');
+                })
+                .catch(err => console.log(err));
+            });
+        });
+        }
+        
+    })
+		
+         //   let message = req.flash();
+         
+            
+		} catch (err) {
+            console.log("eee",err.message);
+            req.flash("error", "Same account exists");
+		    res.redirect("back");
+            
+            //message="erorr";
+			//req.flash("error", err.message);
+	    	//res.render("user/register",{message:message});
+			
+			    //res.redirect("/user/register");
+               
+			//	req.flash("success", "Successfully Updated!");
+              //  console.log(JSON.stringify(newUser));
+            //console.log("User added in database");
+		}
+	});
+
 router.get("/login", (req, res, next) => {
         try {
             var messages = req.flash("error");
@@ -195,7 +284,35 @@ router.get("/login", (req, res, next) => {
             res.redirect("/user/register", {userModel:req.user});
         }
     );
-
+router.get("/teacher-login", (req, res, next) => {
+      try {
+          var messages = req.flash("error");
+          return res.render("user/teacher-login", {
+              title: "Login",
+              messages: messages,
+              hasError: messages.length > 0,
+          });
+      } catch (err) {
+          return next({
+              status: 400,
+              message: err.message
+          });
+      }
+  });
+  
+  router.post(
+      "/teacher-login",
+      passport.authenticate("local", {
+          failureRedirect: "/user/teacher-login",
+          failureFlash: true,
+          successFlash: "  Welcome !",
+          successRedirect: "/user/teacher-login"
+      }),
+      (req, res) => {
+          console.log(req.session);
+          res.redirect("/user/teacher-register", {teacherModel:req.teacher});
+      }
+  );
     function isLoggedIn(req, res, next) {
         if (req.isAuthenticated()) return next();
         res.redirect("/user/login");
