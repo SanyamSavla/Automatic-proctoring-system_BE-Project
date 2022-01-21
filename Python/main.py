@@ -9,10 +9,11 @@ from flask import Flask, request, render_template
 from pymongo import MongoClient 
 from mongo import store_db
 import sys
+import time
 from bson.objectid import ObjectId
 # app = Flask(__name__)
 
-
+capture_duration = 20
 #webcam #0
 video_capture = cv2.VideoCapture(0)
 
@@ -46,9 +47,9 @@ db = conn.test.users
 #print(result)
 
 r=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "rollnumber": 1}).distinct("rollnumber")
-print(r[0])
+#print(r[0])
 name=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "name": 1}).distinct("name")
-print(name[0])
+#print(name[0])
 
 sname=name[0]
 known_face_encodings = []
@@ -74,6 +75,7 @@ except Exception as e:
 
 k=0
 
+start_time = time.time()
 while True:
     # Taking a single frame of video
     ret, frame = video_capture.read()
@@ -114,8 +116,11 @@ while True:
     cv2.imshow('Video', frame)
 
     # press 'q' on the keyboard to quit
-    if (cv2.waitKey(1) & 0xFF == ord('q')) or (name==sname):
-        print(sname)
+    if (cv2.waitKey(1) & 0xFF == ord('q')) or int(time.time() - start_time) > capture_duration:
+        if(name==sname):
+            print(sname)
+        else:
+            print("Not known")
         break
 
 # Release handle to the webcam
@@ -124,4 +129,3 @@ video_capture.release()
 cv2.destroyAllWindows()
 
 
-print("My name is"+name[0])

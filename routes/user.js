@@ -39,11 +39,13 @@ router.get('/test2/:id', isLoggedIn, function (req, res, next) {
     try{
    var dataToSend;
    var url = 'http://127.0.0.1:5000/camera/'+req.user._id.toString() ;
+   res.render('user/camera');
+   var b;
    request(url, function (error, response, body) {
-    console.log("b",)
-  });
-
-    res.render('user/camera');
+      console.log('body:', body);
+    
+    });
+   
      } catch (err) {
       return next({
           status: 400,

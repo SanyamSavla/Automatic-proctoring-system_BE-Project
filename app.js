@@ -20,6 +20,7 @@ require('./config/passport')(passport);
 const axios = require('axios');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
+var testRouter = require('./routes/test');
 routes = require("./routes");
 //const db=require('./models');
 //const routes = require("./routes");
@@ -124,7 +125,7 @@ app.use(function(req, res, next) {
 app.use(flash());
 app.use('/user', userRouter);
 app.use('/', indexRouter);
-
+app.use('/test',testRouter);
 
 // catch 404 and forward to error handler
 //app.use(function(req, res, next) {

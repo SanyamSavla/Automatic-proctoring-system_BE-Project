@@ -1,6 +1,6 @@
 # Importing the Libraries
 import flask
-from flask import Flask, request, render_template
+from flask import Flask, request, render_template,redirect
 #from flask_cors import CORS
 import os
 import subprocess
@@ -27,9 +27,8 @@ def camera(userid):
     )
     (stdoutdata, stderrdata) = p.communicate()
     
-    print("d"+stdoutdata.decode('utf-8'))
-    
-    return '1'
+    print(stdoutdata.decode('utf-8'))
+    return stdoutdata.decode('utf-8')
 
 
 if __name__ == "__main__":
