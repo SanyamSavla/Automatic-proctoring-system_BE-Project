@@ -35,7 +35,7 @@ cloudinary.config({
     });
 
 app.use(express.static('uploads'));
-
+  
 router.get('/test2/:id', isLoggedIn, function (req, res, next) {
     try{
    var dataToSend;
@@ -190,7 +190,7 @@ router
 
 .post((req, res,next) => {
   try {
-    teacherModel.countDocuments( teacherModel.findOne({email: req.body.email}), function(err, count) {
+    userModel.countDocuments( userModel.findOne({email: req.body.email}), function(err, count) {
         //if (err) { return handleError(err) } //handle possible errors
         if(count==1){
             req.flash("error", "Same account exists");
@@ -200,14 +200,15 @@ router
         }
         else{
             console.log("111");
-            const newTeacher = new teacherModel({
+            const newUser = new userModel({
                 name: req.body.name,
                 
-                contactNum: req.body.contactNum,
+                contact: req.body.contactNum,
                 
                 email:req.body.email,
                 
                 password:req.body.password,
+                isAdmin:"true",
             });
         //     newUser.save();
             req.flash("success", "Successfully Updated!");
@@ -216,10 +217,10 @@ router
          //   req.flash("message", "Welcome");
             
          bcrypt.genSalt(10, (err, salt) => {
-            bcrypt.hash(newTeacher.password, salt, (err, hash) => {
+            bcrypt.hash(newUser.password, salt, (err, hash) => {
               if (err) throw err;
-              newTeacher.password = hash;
-              newTeacher
+              newUser.password = hash;
+              newUser
                 .save()
                 .then(user => {
                   req.flash(
@@ -273,7 +274,7 @@ router.get("/login", (req, res, next) => {
     
     router.post(
         "/login",
-        passport.authenticate("local", {
+        passport.authenticate("user", {
             failureRedirect: "/user/login",
             failureFlash: true,
             successFlash: "  Welcome !",
@@ -302,7 +303,7 @@ router.get("/teacher-login", (req, res, next) => {
   
   router.post(
       "/teacher-login",
-      passport.authenticate("local", {
+      passport.authenticate("user", {
           failureRedirect: "/user/teacher-login",
           failureFlash: true,
           successFlash: "  Welcome !",
@@ -310,6 +311,7 @@ router.get("/teacher-login", (req, res, next) => {
       }),
       (req, res) => {
           console.log(req.session);
+          console.log("...",req.teacher)
           res.redirect("/user/teacher-register", {teacherModel:req.teacher});
       }
   );

@@ -11,12 +11,14 @@ var passport = require('passport');
 const LocalStrategy = require("passport-local"),
       methodOverride = require("method-override"),
       User = require("./models/user"),
+      teacher = require("./models/teacher"),
 flash = require('connect-flash');
 const validator= require('express-validator');
 var MongoStore= require('connect-mongo');
 var app = express();
 const cors = require('cors');
 require('./config/passport')(passport);
+
 const axios = require('axios');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
@@ -71,9 +73,14 @@ app.locals.moment = require("moment");
 app.use(flash());
 
 
-passport.use("user", new LocalStrategy(User.authenticate()));
-passport.serializeUser(User.serializeUser());
-passport.deserializeUser(User.deserializeUser());
+//passport.use("user", new LocalStrategy(User.authenticate()));
+ ////passport.serializeUser(User.serializeUser());
+// passport.deserializeUser(User.deserializeUser());
+
+//passport.use("teacher", new LocalStrategy(User.authenticate()));
+//passport.serializeUser(User.serializeUser());
+//passport.deserializeUser(User.deserializeUser());
+
 
 app.use(async function (req, res, next) {
   var cart = null;
@@ -85,6 +92,7 @@ app.use(async function (req, res, next) {
   //res.locals.custom_cart = customCartListing(custom_cart);
   //   console.log(res.locals.custom_cart);
   res.locals.user = req.user;
+  res.locals.teacher = req.teacher;
   res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");
   res.locals.warning = req.flash("warning");

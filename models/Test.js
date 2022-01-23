@@ -1,10 +1,11 @@
 var mongoose = require('mongoose');
 const testSchema = new mongoose.Schema({
-	orgId:{
+	teacher:{
 		type: mongoose.Schema.Types.ObjectId,
-		ref:'Org',
+		ref:'user',
 	},
 	testName:String,
+	testcode:String,
 	settings:{
 		testDuration :String,
 		disableTabChange : Boolean,

@@ -1,17 +1,21 @@
-var express = require('express');
-var router = express.Router();
-var userModel = require('../models/user');
-var Test = require('../models/Test');
-var teacher = require('../models/teacher');
+const express = require('express');
+const router = express.Router();
+      passport = require('passport');
+const userModel = require('../models/user');
+const Test = require('../models/Test');
+const teacherModel = require('../models/teacher');
 //var classModel = require('../models/class');
 //var recordModel = require('../models/record');
 //const clipboardy = require('clipboardy');
 //const MailSender = require('../mail')
 //var useragent = require('express-useragent');
-const { isLoggedIn } = require('../routes/user');
+//const user = require('../routes/user');
 const request = require('request');
 const session = require('express-session');
+const { ensureAuthenticated, forwardAuthenticated } = require('../config/auth');
 
+
+//const { isLoggedIn, isAdmin } = require('../routes/user');
 
 router.get('/userDash', function (req, res, next) {
     errorMsg = ""
@@ -46,11 +50,65 @@ router.get('/teacherDash', function (req, res, next) {
     })
 });
 
-router.get('/addexam', async function (req, res, next) {
+router.get('/addexam',isAdmin, function (req, res, next) {
         
     res.render('test/addexam', {
                 user: req.user
     })
+});
+function isAdmin(req, res, next) {
+    if (req.user.isAdmin) {
+      next();
+    } else {
+      req.flash(
+        "error",
+        "Not Admin"
+      );
+      res.redirect("back");
+    }
+  };
+  
+router.post("/addexam",isAdmin, (req, res) => {
+    
+	try {
+
+      
+		const setting = {};
+        const testDuration=req.body["testDuration"];
+        const totalScore=req.body["totalScore"];
+        setting.testDuration=testDuration;
+        setting.totalScore=totalScore;
+    //    setting.push({testDuration:testDuration,
+       //   totalScore:totalScore
+   //   });
+      //  console.log(setting)
+       // console.log(req.body.testName)
+        var obj = {
+            teacher: req.user,
+            settings:setting,
+            testName:req.body.testName,
+            testcode:req.body.testcode
+          }
+		const newTest = new Test({
+			settings:setting,
+            testName:req.body.testName,
+            testcode:req.body.testcode
+			
+		});
+        console.log(obj)
+        console.log(req.session);
+        Test.create(obj, (err, item) => {
+            if (err) {
+                 console.log(err);
+            }
+            
+        });
+		res.redirect("/test/addexam");
+	} catch (err) {
+		console.log(err);
+		req.flash(err, err.message);
+		res.redirect("back");
+	}
 });
 
 /// dummy---

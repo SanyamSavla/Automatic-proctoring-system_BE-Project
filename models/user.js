@@ -8,15 +8,18 @@ const userschema = new mongoose.Schema({
 		type: Date,
 		default: Date.now
 	},
-    
-    name: {type: String, required: true},
-    class:{type: String, required: false},
-    rollnumber: {type: String, required: true},
-    email: {type: String, required: true},
-    contact:{type: String, required:true},
-    password: {type: String, required: true},
-    who:{type: String, required:false},
-    year:{type: String, required:true}
+    isAdmin: {
+		type: Boolean,
+		default: false
+	},
+    name: {type: String},
+    class:{type: String,},
+    rollnumber: {type: String, },
+    email: {type: String,},
+    contact:{type: String,},
+    password: {type: String, },
+    who:{type: String, },
+    year:{type: String, }
 });
 
 //userschema.methods.encryptPassword = function(password){
