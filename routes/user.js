@@ -3,7 +3,7 @@ const express = require('express');
       passport = require('passport');
       userModel = require('../models/user');
       imgModel = require('../models/image');
-      teacherModel= require('../models/teacher');
+  
 //var classModel = require('../models/class');
 const bcrypt = require('bcryptjs');  
    //  multer = require('multer');
@@ -307,7 +307,7 @@ router.get("/teacher-login", (req, res, next) => {
           failureRedirect: "/user/teacher-login",
           failureFlash: true,
           successFlash: "  Welcome !",
-          successRedirect: "/user/teacher-login"
+          successRedirect: "/test/teacherDash"
       }),
       (req, res) => {
           console.log(req.session);

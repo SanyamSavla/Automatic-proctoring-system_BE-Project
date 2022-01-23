@@ -1,0 +1,182 @@
+<%- include('../partials/teacher-sidenav'); -%>
+
+
+<div class="main-content" id="panel">
+    <div class="container-fluid py-3 bg-primary top-padding" style="border-bottom:0.0625rem solid #e9ecef33 !important;" >
+        <div class="row align-items-center">
+            <div class="col col-lg-auto text-center text-sm-left">
+                <h5 style="font-family: 'LakeShore', sans-serif" class="h2 text-white d-inline-block mb-0 custom-heading">Exam center</h5>
+            </div>
+           
+        </div>
+    </div>
+    <div>             
+                 
+         
+                      
+         
+        <div class="container w-75 mx-auto border p-0" > 
+            <div class="w-100 d-flex border-bottom" style="color: white;">
+                
+             
+
+                <div class="w-50 text-center" @click="selectTab(1)">
+                    Test Settings
+                </div>
+                <div class="w-50 text-center" @click="selectTab(2)">
+                    Questions
+                </div>
+
+               
+                   
+                  
+
+            </div>
+            <% if(tests!=null) { %>
+                <table style="color: white;">
+                <tr>
+                    <th>ID</th>
+                    <th>TEST NAME</th>
+                    <th>CODE</th>
+                    <th>DURATION </th>
+                    <th>SCORE </th>
+                  
+                </tr>
+                <% tests.forEach(function(test){ %>
+                <tr>
+                    <td><%= test._id%></td>
+                    <td><%= test.testName %></td>
+                    <td><%= test.testcode%></td>
+                    <td><%= test.settings.testDuration %></td>
+                    <td> <%= test.settings.totalScore %></td>
+                   
+                
+                </tr>
+                <% }) %>
+                </table>
+                <% } %>
+        </div>
+    </div>
+
+</div>
+
+<script>
+import Api from '../../../utils/api';
+
+export default {
+    data(){
+        return {
+            currentTab: 1,
+            test: null,
+            showDialog: false,
+            newQuestion: null,
+            newOption: '',
+            disableTabChange : false,
+            enableFullScreen : false,
+            testDuration : '',
+            csvFile: null,
+        }
+    },
+    methods:{
+        uploadFile(){
+            this.csvFile = this.$refs.file.files[0];
+        },
+        selectTab(tabNum){
+            this.currentTab = tabNum;
+        },
+        toggleShowDialog(value){
+            this.newQuestion = {
+                questionText: '',
+                options: [],
+                correctOptions: [],
+                qType: 'single'
+            };
+            this.showDialog = value;
+        },
+        addNewOption(){
+            if(this.newOption !== ''){
+                this.newQuestion.options.push(this.newOption);
+                this.newOption = '';
+            }
+        },
+        addNewQuestion(){
+            console.log(this.newQuestion);
+            let isValid = true;
+            if(this.newQuestion.questionText === ''){
+                isValid = false;
+            }
+            if((this.newQuestion.qType === 'single' || this.newQuestion.qType === 'multiple') && this.newQuestion.options.length === 0){
+                isValid = false;
+            }
+            if(this.newQuestion.score === 0){
+                isValid = false;
+            }
+            if(isValid){
+                if(this.newQuestion.type === 'text'){
+                    this.newQuestion.options = [];
+                    this.newQuestion.correctOptions = [];
+                }
+                this.test.questions.push(this.newQuestion);
+                this.toggleShowDialog(false);
+            }
+        },
+        saveSettings(){
+            console.log(this.test.settings);
+            this.currentTab = 2;
+        },
+        async createTest(){
+            if(this.test.testName === '' || this.test.questions.length === null)
+                return;
+            let ts = this.test.settings.totalScore;
+            console.log(ts);
+            let sum=0;
+            this.test.questions.forEach(question => {
+                console.log(question.score);
+                sum+=question.score;
+            });
+            console.log(sum);
+            if(ts!=sum){
+                alert('Total score does not match sum of question score!');
+                return;
+            }
+            if(!this.csvFile){
+                return;
+            }
+            // var reader = new FileReader();
+            // let $ = this;
+            // reader.onload = async function (e) {
+            //     var rows = e.target.result.split("\n");
+            //     console.log(rows);
+            //     $.test.users = rows;
+                
+            // }
+            const formData = new FormData();
+            formData.append('file',this.csvFile);
+            formData.append('test',JSON.stringify(this.test));
+            console.log(this.test);
+            const response = await Api.createTest(formData);
+            console.log(response);
+        }
+    },
+    computed:{
+        isFirstTabSelected(){
+            return this.currentTab === 1;
+        }
+    },
+    created(){
+        this.test = {
+            testName: '',
+            settings: {
+                testDuration: '',
+                disableTabChange: false,
+                enableFullScreen: false,
+                severity : null,
+                totalScore : null,
+            }, 
+            questions: [
+               
+            ]
+        }
+    }
+}
+</script>

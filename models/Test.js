@@ -9,7 +9,8 @@ const testSchema = new mongoose.Schema({
 	settings:{
 		testDuration :String,
 		disableTabChange : Boolean,
-		enableFullScreen : Boolean,
+		disableNeck : Boolean,
+		disableMobile : Boolean,
 		severity:String,
 		totalScore:Number
 	},

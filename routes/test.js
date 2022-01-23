@@ -3,7 +3,7 @@ const router = express.Router();
       passport = require('passport');
 const userModel = require('../models/user');
 const Test = require('../models/Test');
-const teacherModel = require('../models/teacher');
+
 //var classModel = require('../models/class');
 //var recordModel = require('../models/record');
 //const clipboardy = require('clipboardy');
@@ -76,8 +76,15 @@ router.post("/addexam",isAdmin, (req, res) => {
 		const setting = {};
         const testDuration=req.body["testDuration"];
         const totalScore=req.body["totalScore"];
+        const disableTabChange=req.body["disableTabChange"];
+        const disableNeck=req.body["disableNeck"];
+        const disableMobile=req.body["disableMobile"];
         setting.testDuration=testDuration;
         setting.totalScore=totalScore;
+        setting.disableTabChange=disableTabChange;
+        setting.disableNeck=disableNeck;
+        setting.disableMobile=disableMobile;
+
     //    setting.push({testDuration:testDuration,
        //   totalScore:totalScore
    //   });
@@ -89,12 +96,12 @@ router.post("/addexam",isAdmin, (req, res) => {
             testName:req.body.testName,
             testcode:req.body.testcode
           }
-		const newTest = new Test({
-			settings:setting,
-            testName:req.body.testName,
-            testcode:req.body.testcode
+	//	const newTest = new Test({
+	//		settings:setting,
+      //      testName:req.body.testName,
+        //    testcode:req.body.testcode
 			
-		});
+//		});
         console.log(obj)
         console.log(req.session);
         Test.create(obj, (err, item) => {
@@ -103,12 +110,32 @@ router.post("/addexam",isAdmin, (req, res) => {
             }
             
         });
+        req.flash("success","Added");
 		res.redirect("/test/addexam");
 	} catch (err) {
 		console.log(err);
 		req.flash(err, err.message);
 		res.redirect("back");
 	}
+});
+
+router.get('/viewexam',isAdmin, function (req, res, next) {
+   
+        try {
+            var test =  Test.find({}).populate();
+            Test.find({teacher: req.user._id}, function (err, allDetails) {
+                if (err) {
+                    console.log(err);
+                } else {
+                    res.render("test/viewexam", { tests: allDetails })
+                }
+            })    
+        } catch (err) {
+            return next({
+                status: 400,
+                message: err.message
+            });
+        }
 });
 
 /// dummy---
