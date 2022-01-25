@@ -33,7 +33,7 @@
 
             </div>
             <% if(tests!=null) { %>
-                <table style="color: white;">
+                <table class="container w-75 mx-auto border p-0" style="color: white;">
                 <tr>
                     <th>ID</th>
                     <th>TEST NAME</th>
@@ -46,7 +46,7 @@
                 <tr>
                     <td><%= test._id%></td>
                     <td><%= test.testName %></td>
-                    <td><%= test.testcode%></td>
+                    <td><a href="/test/<%=test._id%>/addquestion"> <%= test.testcode%> </a> </td>
                     <td><%= test.settings.testDuration %></td>
                     <td> <%= test.settings.totalScore %></td>
                    

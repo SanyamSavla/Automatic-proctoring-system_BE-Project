@@ -138,6 +138,67 @@ router.get('/viewexam',isAdmin, function (req, res, next) {
         }
 });
 
+router.get('/:testid/addquestion',isAdmin, function (req, res, next) {
+   
+    try {
+        console.log(req.params.testid);
+        Test.find({_id: req.params.testid}, function (err, allDetails) {
+            if (err) {
+                console.log(err);
+            } else {
+
+                console.log(",,",allDetails._id)
+                res.render("test/addquestion", { tests:req.params.testid })
+            }
+        })
+        const tests2= Test.findById(req.params.testid).populate();   
+       // console.log(tests)
+        
+    }
+       
+     catch (err) {
+        return next({
+            status: 400,
+            message: err.message
+        });
+    }
+});
+
+router.post("/addquestion/:testid",isAdmin, async function(req, res)  {
+    
+	try {   
+		const questions = [];
+        const questionText=req.body["questionText"];
+        const options=[];
+        const a=req.body["a"];
+        const b=req.body["b"];
+        const c=req.body["c"];
+        const d=req.body["d"];
+        const ans=req.body["ans"];
+
+        options.push( a,b,c,d);
+        console.log( options);
+        questions.push({questionText:questionText,
+        options:options,
+        correctOptions: ans
+           });
+        
+        const question =  await Test.findById(req.params.testid);
+           /*const newDesign = { };*/
+           question.questions=questions
+        
+        
+        console.log("addeed", questions);
+        question.save();
+        req.flash("success","Added");
+		res.redirect("back");
+	} catch (err) {
+		console.log(err);
+		req.flash(err, err.message);
+		res.redirect("back");
+	}
+});
+
 /// dummy---
 router.get('/exam',async function(req,res){
     try {

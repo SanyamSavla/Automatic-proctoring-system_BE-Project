@@ -1,0 +1,88 @@
+<%- include('../partials/teacher-sidenav'); -%>
+
+<div class="main-content" id="panel">
+    <div class="container-fluid py-3 bg-primary top-padding" style="border-bottom:0.0625rem solid #e9ecef33 !important;" >
+        <div class="row align-items-center">
+            <div class="col col-lg-auto text-center text-sm-left">
+                <h5 style="font-family: 'LakeShore', sans-serif" class="h2 text-white d-inline-block mb-0 custom-heading">Exam center</h5>
+            </div>
+           
+        </div>
+    </div>
+    <div>    
+                    <div class="modal fade" id="myModal" role="dialog">
+                        <div class="modal-dialog modal-lg">
+                          <div class="modal-content">
+                            <div class="modal-header">
+                                <h4 class="modal-title">Add Questionn <%=tests%> </h4>
+                              <button type="button" class="close" data-dismiss="modal">&times;</button>
+                            
+                            </div>
+                            <div class="w-100 row" style="padding-left: 15px;">
+                            <div class="col-md-8 ">
+
+                                
+                    <form action="/test/addquestion/<%=tests%>" method="post">
+                                <div class="form-group">
+                                    <label>  Add question </label>
+                                    <input class="form-control" type="text" name="questionText" placeholder="questionText" />
+                                </div>
+                               
+                                <div >
+                                    
+                                    <div class="form-row"> 
+                                        <input type="text" class="form-control col-md-8 mr-1" name="a" id="" placeholder="Enter option A">
+                                        <input type="text" class="form-control col-md-8 mr-1" name="b" id="" placeholder="Enter  option B" >
+                                        <input type="text" class="form-control col-md-8 mr-1" name="c" id="" placeholder="Enter  option C ">
+                                        <input type="text" class="form-control col-md-8 mr-1" name="d" id="" placeholder="Enter  option D" >
+                                        
+                                      
+                                    </div>
+                                    
+                                    <div class="form-row"> 
+                                        <input type="text" class="form-control col-md-8 mr-1" name="ans" id="" placeholder="Enter Answer">
+                                       
+                                      
+                                    </div>
+
+                                </div>
+                               
+                      
+                            </div>
+                            <div class="col-md-4">
+                                <select class="custom-select" v-model="newQuestion.qType">
+                                    <option value="single" selected>Single Correct</option>
+                                    <option value="multiple">Multiple Correct</option>
+                                    <option value="text">Text Area</option>
+                                </select>
+                                <div class="mt-2">
+                                    <input type="text" class="form-control" placeholder="Enter score" v-model.number="newQuestion.score">
+                                </div>
+                            </div>
+                          <!--   <div class="modal-body">
+                              <p>This is a large modal.</p>
+                            </div>
+                            -->
+                        </div>
+                            <div class="modal-footer">
+                                <div class="w-100 d-flex justify-content-center">
+                                    <button class="btn btn-success mb-3" >Add</button>
+                                </div>
+                    </form>     
+                              <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                            </div>
+                          
+                        </div>
+                      </div>
+
+                    
+                </div>
+
+                <div class="w-100 d-flex justify-content-end mb-2">
+                   
+                    <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">Add Question</button>
+                   
+                </div>
+
+            
+    </div>
