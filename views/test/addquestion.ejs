@@ -84,5 +84,34 @@
                    
                 </div>
 
-            
+                <% if(questions!=null) { %>
+                    <table class="container w-75 mx-auto border p-0" style="color: white;">
+                    <tr>
+                        <th>Q1 </th>
+                        <th>A</th>
+                        <th>B</th>
+                        <th>C </th>
+                        <th>D </th>
+                        <th>Answer <%= questions[0].questions.length%> </th>
+                        <% for(let i=0; i < questions[0].questions.length; i++) { %> 
+                            
+                            <tr>
+                                <td><%= questions[0].questions[i].questionText%></td>
+                                <td><%= questions[0].questions[i].options[0] %></td>
+                                <td> <%= questions[0].questions[i].options[1]%>  </td>
+                                <td><%= questions[0].questions[i].options[2] %></td>
+                                <td> <%= questions[0].questions[i].options[3] %></td>
+                                <td> <%= questions[0].questions[i].correctOptions[0] %></td>
+                            
+                            </tr>
+                           
+                            <% } %>
+                    <% questions[0].questions.forEach(function(questions){ %>
+                        
+                       
+                        
+                    </tr>
+                    <% }) %>
+                    </table>
+                    <% } %>
     </div>

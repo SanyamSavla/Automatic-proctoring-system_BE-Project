@@ -147,13 +147,12 @@ router.get('/:testid/addquestion',isAdmin, function (req, res, next) {
                 console.log(err);
             } else {
 
-                console.log(",,",allDetails._id)
-                res.render("test/addquestion", { tests:req.params.testid })
+                console.log(",,",allDetails)
+                res.render("test/addquestion", { tests:req.params.testid , questions:allDetails })
             }
-        })
-        const tests2= Test.findById(req.params.testid).populate();   
-       // console.log(tests)
-        
+        }) 
+
+      
     }
        
      catch (err) {
@@ -164,7 +163,7 @@ router.get('/:testid/addquestion',isAdmin, function (req, res, next) {
     }
 });
 
-router.post("/addquestion/:testid",isAdmin, async function(req, res)  {
+router.post("/addquestion/:testid",isAdmin,async  function(req, res)  {
     
 	try {   
 		const questions = [];
@@ -183,13 +182,17 @@ router.post("/addquestion/:testid",isAdmin, async function(req, res)  {
         correctOptions: ans
            });
         
-        const question =  await Test.findById(req.params.testid);
-           /*const newDesign = { };*/
-           question.questions=questions
+       // const question =  await Test.findById(req.params.testid);
         
-        
-        console.log("addeed", questions);
-        question.save();
+        //Test.updateOne({_id:req.params.testid},{$push:{"questions" : questions}})
+      //  question.questions=questions
+        const question = await Test.updateOne({_id:req.params.testid},{$push:{"questions" : questions}})
+      //  const test = await Test.create({...reqBody,orgId: orgId})  
+        console.log("addeed", question);
+        var obj={
+            question
+        }
+      
         req.flash("success","Added");
 		res.redirect("back");
 	} catch (err) {
