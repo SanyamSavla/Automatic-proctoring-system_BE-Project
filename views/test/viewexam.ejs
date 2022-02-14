@@ -6,6 +6,7 @@
         <div class="row align-items-center">
             <div class="col col-lg-auto text-center text-sm-left">
                 <h5 style="font-family: 'LakeShore', sans-serif" class="h2 text-white d-inline-block mb-0 custom-heading">Exam center</h5>
+               
             </div>
            
         </div>
@@ -14,36 +15,29 @@
                  
          
                       
-         
-        <div class="container w-75 mx-auto border p-0" > 
-            <div class="w-100 d-flex border-bottom" style="color: white;">
-                
-             
-
-                <div class="w-50 text-center" @click="selectTab(1)">
-                    Test Settings
-                </div>
-                <div class="w-50 text-center" @click="selectTab(2)">
-                    Questions
-                </div>
-
-               
-                   
-                  
-
-            </div>
+         <br>
+         <br>
+        <div class="container w-75 mx-auto  p-0" > 
+            
             <% if(tests!=null) { %>
-                <table class="container w-75 mx-auto border p-0" style="color: white;">
-                <tr>
-                    <th>ID</th>
-                    <th>TEST NAME</th>
-                    <th>CODE</th>
-                    <th>DURATION </th>
-                    <th>SCORE </th>
-                  
+                <table class="table">
+                <tr> 
+                    <div class="fixed-table-container"> 
+                      
+                        <thead class="thead-light" style="" >
+    
+                            <th style="font-size:15px;font-weight: bold;">ID </th>
+                            <th style="font-size:15px;font-weight: bold;">TEST NAME</th>
+                            <th style="font-size:15px;font-weight: bold;">CODE</th>
+                            <th style="font-size:15px;font-weight: bold;">DURATION </th>
+                            <th style="font-size:15px;font-weight: bold;">SCORE </th>
+                          
+                        </thead>
+                          
+                    
                 </tr>
                 <% tests.forEach(function(test){ %>
-                <tr>
+                <tr class="table-primary" style="color: black;">
                     <td><%= test._id%></td>
                     <td><%= test.testName %></td>
                     <td><a href="/test/<%=test._id%>/addquestion"> <%= test.testcode%> </a> </td>
@@ -53,6 +47,7 @@
                 
                 </tr>
                 <% }) %>
+                </div> 
                 </table>
                 <% } %>
         </div>

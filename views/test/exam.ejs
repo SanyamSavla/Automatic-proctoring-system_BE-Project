@@ -1,0 +1,113 @@
+<%- include('../partials/user-sidenav'); -%>
+
+<!-- Main content -->
+<div class="main-content" id="panel">
+    <!-- Topnav -->
+    <div class="container-fluid py-3 bg-primary top-padding" style="border-bottom:0.0625rem solid #e9ecef33 !important;" >
+        <div class="row align-items-center">
+            <div class="col col-lg-auto text-center text-sm-left">
+                <h5 style="font-family: 'LakeShore', sans-serif" class="h2 text-white d-inline-block mb-0 custom-heading">Exam center</h5>
+            </div>
+            <div class="mx-auto mb-0 text-center"> 
+                <div class="container">
+                    <% if(error && error.length > 0){ %>
+                    <div class="alert alert-danger" role="alert">
+                      <%= error %>
+                    </div>
+                    <% } %> <% if(success && success.length > 0){ %>
+                    <div class="alert alert-success" role="alert">
+                      <%= success %>
+                    </div>
+                    <% } %> <% if(warning && warning.length > 0){ %>
+                    <div class="alert alert-warning" role="alert">
+                      <%= warning %>
+                    </div>
+                    <% } %> <% if(info && info.length > 0){ %>
+                    <div class="alert alert-info" role="alert">
+                      <%= info %>
+                    </div>
+                    <% } %>
+                  </div>
+                <% if(errorMsg && errorMsg.length > 0){ %>
+                    <div class="alert alert-danger fade show " role="alert">
+                    <span class="alert-text mr-2">
+                        <%= errorMsg %>
+                    </span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <% } %>
+
+                <% if(successMsg && successMsg.length > 0){ %>
+                <div class="alert alert-success fade show " role="alert">
+                    <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                    <span class="alert-text mr-2"><strong>Success!</strong>
+                        <%= successMsg %>
+                    </span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <br>
+                <% } %>
+            </div>
+            <!-- 
+            <div class="col-right ml-auto mr-3  d-sm-block">
+                <div class="media align-items-center">
+                    <span class="avatar avatar-sm rounded-circle" >
+                        <img alt="" src="../../Python/uploads/1234.png" style="width:max-content">
+                    </span>
+                    <div class="media-body  ml-2  d-none d-lg-block">
+                        <h4 class="mb-0  " style="color: white;font-family:'Lobster', cursive;">Welcome
+                            <b><%=user.name%></b>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            -->
+        </div>
+    </div>
+    
+    <!-- Header -->
+    <div class="col-md-10" style="color: white;">
+        <br>
+        <% if(questions!=null) { %>
+
+            <% for(let i=0; i < questions[0].questions.length; i++) { %> 
+        <div  style="width: 100%;color: black;  background-color: #f1f1f1;" class="card">
+        <form action="/test/submit-exam/<%=tests%>" method="post"> 
+            <div>
+                <div class="card-body">
+                    <h5 class="card-title" style="color: black;">(Q<%=i%>) <%= questions[0].questions[i].questionText%></h5>
+                </div>
+                <div>
+                    <div>
+                        <input type="radio" name="<%=i%>"  id="" value="A"> <%= questions[0].questions[i].options[0] %>
+                    </div>
+                    <div>
+                        <input type="radio" name="<%=i%>"  id="" value="B"> <%= questions[0].questions[i].options[1] %>
+                    </div>  
+                    <div>
+                        <input type="radio" name="<%= i%>"  id="" value="C"> <%= questions[0].questions[i].options[2] %>
+                    </div>
+                    <div>
+                        <input type="radio" name="<%= i%>"  id="" value="D"> <%= questions[0].questions[i].options[3] %>
+                    </div>
+                </div>
+                       
+            </div>
+            
+            </div>
+            <% } %>      
+            <button class="btn btn-success mb-3" >Submit</button>
+        </form>
+    </div>
+    <% } %>      
+
+ 
+
+</div>
+
+
+<%- include('../partials/footer'); -%>

@@ -1,0 +1,108 @@
+<%- include('../partials/user-sidenav'); -%>
+
+<!-- Main content -->
+<div class="main-content" id="panel">
+    <!-- Topnav -->
+    <div class="container-fluid py-3 bg-primary top-padding" style="border-bottom:0.0625rem solid #e9ecef33 !important;" >
+        <div class="row align-items-center">
+            <div class="col col-lg-auto text-center text-sm-left">
+                <h5 style="font-family: 'LakeShore', sans-serif" class="h2 text-white d-inline-block mb-0 custom-heading">Exam center</h5>
+            </div>
+            <div class="mx-auto mb-0 text-center"> 
+                <% if(errorMsg && errorMsg.length > 0){ %>
+                    <div class="alert alert-danger fade show " role="alert">
+                    <span class="alert-text mr-2">
+                        <%= errorMsg %>
+                    </span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <% } %>
+
+                <% if(successMsg && successMsg.length > 0){ %>
+                <div class="alert alert-success fade show " role="alert">
+                    <span class="alert-icon"><i class="ni ni-like-2"></i></span>
+                    <span class="alert-text mr-2"><strong>Success!</strong>
+                        <%= successMsg %>
+                    </span>
+                    <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <br>
+                <% } %>
+            </div>
+            <!-- 
+            <div class="col-right ml-auto mr-3  d-sm-block">
+                <div class="media align-items-center">
+                    <span class="avatar avatar-sm rounded-circle" >
+                        <img alt="" src="../../Python/uploads/1234.png" style="width:max-content">
+                    </span>
+                    <div class="media-body  ml-2  d-none d-lg-block">
+                        <h4 class="mb-0  " style="color: white;font-family:'Lobster', cursive;">Welcome
+                            <b><%=user.name%></b>
+                        </h4>
+                    </div>
+                </div>
+            </div>
+            -->
+        </div>
+    </div>
+    <div class="main-content" id="panel">
+    
+        <div>             
+                     
+             
+                          
+             <br>
+             <br>
+            <div class="container w-75 mx-auto  p-0" > 
+                
+                <% if(tests!=null) { %>
+                    <table class="table">
+                    <tr> 
+                        <div class="fixed-table-container"> 
+                          
+                            <thead class="thead-light" style="" >
+        
+                                <th style="font-size:15px;font-weight: bold;">ID </th>
+                                <th style="font-size:15px;font-weight: bold;">TEST NAME</th>
+                                <th style="font-size:15px;font-weight: bold;">SCORE</th>
+                                <th style="font-size:15px;font-weight: bold;">DURATION </th>
+                                <th style="font-size:15px;font-weight: bold;">TOTAL SCORE </th>
+                              
+                            </thead>
+                              
+                        
+                    </tr>
+                   
+                        <% for(let i=0; i < user.score.length; i++) { %> 
+                    <tr class="table-primary" style="color: black;">
+                        <td><%= user.score[i].test%></td>
+                        <td><%=  %></td>
+                        <td><a href=""> <%= user.score[i].score%> </a> </td>
+                        <td><%=  %></td>
+                        <td> <%= %></td>
+                       
+                    
+                    </tr>
+                    <% } %>
+                    </div> 
+                    </table>
+                    <% } %>
+            </div>
+        </div>
+     
+    <!-- Header -->
+    <div class="col-md-10">
+    
+       <br>
+    </div>
+
+ 
+
+</div>
+
+
+<%- include('../partials/footer'); -%>

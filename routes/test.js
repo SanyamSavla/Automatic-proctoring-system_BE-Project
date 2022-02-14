@@ -34,6 +34,149 @@ router.get('/userDash', function (req, res, next) {
     })
 });
 
+router.get('/give-exam', function (req, res, next) {
+    errorMsg = ""
+    successMsg = ""
+    if (req.session.errorMsg || req.session.successMsg) {
+        errorMsg = req.session.errorMsg
+        successMsg = req.session.successMsg
+        req.session.errorMsg = undefined
+        req.session.successMsg = undefined
+    }
+    Test.find({}, function (err, allDetails) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render('test/give-exam', {
+                user: req.user,
+                errorMsg: errorMsg,
+                successMsg: successMsg,
+                tests: allDetails
+         })
+           
+        }
+    })   
+          
+});
+
+router.get('/:testid/exam', function (req, res, next) {
+    errorMsg = ""
+    successMsg = ""
+    var message = req.flash("error");
+    if (req.session.errorMsg || req.session.successMsg) {
+        errorMsg = req.session.errorMsg
+        successMsg = req.session.successMsg
+        req.session.errorMsg = undefined
+        req.session.successMsg = undefined
+    }
+    Test.find({_id: req.params.testid}, function (err, allDetails) {
+        if (err) {
+            console.log(err);
+        } else {res.render('test/exam', {
+            user: req.user,
+            errorMsg: errorMsg,
+            successMsg: successMsg,
+            tests:req.params.testid,
+            questions: allDetails,message: message,
+            hasError: message.length > 0,
+        })   
+        }
+    }) 
+            
+          
+});
+
+router.post("/submit-exam/:testid",async  function(req, res)  {
+    
+	try {   
+        const quest =  await Test.findById(req.params.testid);        
+        const length=quest.questions.length;
+
+        const correct=[]; // correct answers
+       
+        
+        for (i = 0; i < length; i++) {
+            const corr= quest.questions[i].correctOptions[0];
+           // console.log(corr)
+                correct.push(corr);
+            }
+        console.log(correct);
+		const answers = []; // answers of student
+        const responses = [];
+        
+
+                        for (i = 0; i < length; i++) {
+                            const answer = req.body[i];
+                            answers.push(
+                                answer
+                            );
+                        }
+                        //calculate score 
+        var c=0;
+        for (i = 0; i < length; i++) {
+        
+            if(answers[i]==correct[i]){
+                c+=1;
+            }
+            else{
+                continue;
+            }
+        }
+        console.log("Score of",req.user.name,"is",(c));
+        console.log( answers);
+        responses.push({
+            userId:req.user,
+            answers:answers,
+            score:c
+           });
+        
+       // const question =  await Test.findById(req.params.testid);
+        
+        //Test.updateOne({_id:req.params.testid},{$push:{"questions" : questions}})
+      //  question.questions=questions
+        const question = await Test.updateOne({_id:req.params.testid},{$push:{"responses" : responses}})
+      //  const test = await Test.create({...reqBody,orgId: orgId})  
+        console.log("addeed", responses);
+        var obj={
+            test:req.params.testid,
+            score:c
+        }
+        const active_user = await userModel.updateOne({_id:req.user._id},{$push:{"score" : obj}})
+        req.flash("success","Added");
+		res.redirect("back");
+	} catch (err) {
+		console.log(err);
+		req.flash(err, err.message);
+		res.redirect("back");
+	}
+});
+
+
+router.get('/results', function (req, res, next) {
+    errorMsg = ""
+    successMsg = ""
+    var message = req.flash("error");
+    if (req.session.errorMsg || req.session.successMsg) {
+        errorMsg = req.session.errorMsg
+        successMsg = req.session.successMsg
+        req.session.errorMsg = undefined
+        req.session.successMsg = undefined
+    }
+    Test.find({}, function (err, allDetails) {
+        if (err) {
+            console.log(err);
+        } else {res.render('test/exam-results', {
+            user: req.user,
+            errorMsg: errorMsg,
+            successMsg: successMsg,
+            tests: allDetails,message: message,
+            hasError: message.length > 0,
+        })   
+        }
+    }) 
+            
+          
+});
 router.get('/teacherDash', function (req, res, next) {
     errorMsg = ""
     successMsg = ""
@@ -43,11 +186,20 @@ router.get('/teacherDash', function (req, res, next) {
         req.session.errorMsg = undefined
         req.session.successMsg = undefined
     }
-
-    res.render('test/teacher-dashboard', {
+    Test.find({teacher: req.user._id}, function (err, allDetails) {
+        if (err) {
+            console.log(err);
+        } else {
+            res.render('test/teacher-dashboard', {
                 user: req.user, errorMsg: errorMsg,
                 successMsg: successMsg,
-    })
+                user:req.user,
+                tests:allDetails
+                    
+        })
+            }
+    })    
+    
 });
 
 router.get('/addexam',isAdmin, function (req, res, next) {

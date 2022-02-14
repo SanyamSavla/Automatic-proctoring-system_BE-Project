@@ -18,7 +18,13 @@ const userschema = new mongoose.Schema({
     email: {type: String,},
     contact:{type: String,},
     password: {type: String, },
-    who:{type: String, },
+   score:[{
+    test:{
+			type: mongoose.Schema.Types.ObjectId,
+			ref:'Test',
+		},
+      score: String,
+   }],
     year:{type: String, }
 });
 

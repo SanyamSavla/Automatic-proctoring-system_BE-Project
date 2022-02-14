@@ -92,6 +92,7 @@ app.use(async function (req, res, next) {
   //res.locals.custom_cart = customCartListing(custom_cart);
   //   console.log(res.locals.custom_cart);
   res.locals.user = req.user;
+  res.locals.test=req.test;
   res.locals.teacher = req.teacher;
   res.locals.error = req.flash("error");
   res.locals.success = req.flash("success");

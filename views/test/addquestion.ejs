@@ -1,5 +1,6 @@
 <%- include('../partials/teacher-sidenav'); -%>
 
+
 <div class="main-content" id="panel">
     <div class="container-fluid py-3 bg-primary top-padding" style="border-bottom:0.0625rem solid #e9ecef33 !important;" >
         <div class="row align-items-center">
@@ -40,10 +41,21 @@
                                     </div>
                                     
                                     <div class="form-row"> 
-                                        <input type="text" class="form-control col-md-8 mr-1" name="ans" id="" placeholder="Enter Answer">
                                        
+                                        <select name="ans"  value class="form-control" >
+                                            <option value="" selected disabled hidden>Select Answer</option>
+                                            <option value="">Null</option>
+                                            <option value="A">OPTION A</option>
+                                            <option value="B">OPTION B</option>
+                                            <option value="C">OPTION C</option>
+                                            <option value="D">OPTION D</option>
+                                            
+                                          </select>
                                       
                                     </div>
+                                    
+                                        
+                                     
 
                                 </div>
                                
@@ -83,35 +95,80 @@
                     <button type="button" class="btn btn-success btn-lg" data-toggle="modal" data-target="#myModal">Add Question</button>
                    
                 </div>
+                <style>
+                    .fresh-table{
+                        margin-top: 45px;
+                        box-shadow: -15px 27px 69px rgba(0,0,0,.30);
+                        margin-bottom: 50px;
+                    }
+                    .fresh-table.full-screen-table{
+                        margin-top: 0;
+                    }
+                    .fresh-table .fixed-table-container {
+                        border-width: initial !important;
+                        border-style: none !important;
+                        border-color: initial !important;
+                        border-image: initial !important;
+                    }
+                    .bootstrap-table .fixed-table-container .fixed-table-body {
+                        overflow-x: auto;
+                        overflow-y: auto;
+                        height: 100%;
+                    }
+                    td {
+                        white-space: normal !important; 
+                        word-wrap: break-word;  
+                      }
 
-                <% if(questions!=null) { %>
+                </style>
+                <div class="container"> 
+                <div class="fresh-table full-color-orange">
+                    <!--
+                      Available colors for the full background: full-color-blue, full-color-azure, full-color-green, full-color-red, full-color-orange
+                      Available colors only for the toolbar: toolbar-color-blue, toolbar-color-azure, toolbar-color-green, toolbar-color-red, toolbar-color-orange
                     <table class="container w-75 mx-auto border p-0" style="color: white;">
-                    <tr>
-                        <th>Q1 </th>
-                        <th>A</th>
-                        <th>B</th>
-                        <th>C </th>
-                        <th>D </th>
-                        <th>Answer <%= questions[0].questions.length%> </th>
+                    -->
+                      <div class="toolbar">
+                        <button id="alertBtn" class="btn btn-success"> QUESTIONS-</button>
+                      </div>
+            
+                <table class="table">
+                       
+                <% if(questions!=null) { %>
+                  
+                    <div class="fixed-table-container"> 
+                      
+                    <thead class="thead-light" style="" >
+
+                        <th style="font-size:15px;font-weight: bold;word-wrap: break-word;min-width: 160px;max-width: 160px;">QUESTIONS </th>
+                        <th style="font-size:15px;font-weight: bold;">A</th>
+                        <th style="font-size:15px;font-weight: bold;">B</th>
+                        <th style="font-size:15px;font-weight: bold;">C </th>
+                        <th style="font-size:15px;font-weight: bold;">D </th>
+                        <th class="table-danger" style="font-size:15px;font-weight: bold;">Answer</th>
+                        
+                    </thead>
+                      
+                       
+                        
                         <% for(let i=0; i < questions[0].questions.length; i++) { %> 
                             
-                            <tr>
-                                <td><%= questions[0].questions[i].questionText%></td>
-                                <td><%= questions[0].questions[i].options[0] %></td>
-                                <td> <%= questions[0].questions[i].options[1]%>  </td>
-                                <td><%= questions[0].questions[i].options[2] %></td>
-                                <td> <%= questions[0].questions[i].options[3] %></td>
-                                <td> <%= questions[0].questions[i].correctOptions[0] %></td>
+                            <tr  style="color: black;">
+                                <td class="table-primary" style="word-wrap: break-word;min-width: 160px;max-width: 160px;" ><%= questions[0].questions[i].questionText%></td>
+                                <td class="table-primary"><%= questions[0].questions[i].options[0] %></td>
+                                <td class="table-primary"> <%= questions[0].questions[i].options[1]%>  </td>
+                                <td class="table-primary"><%= questions[0].questions[i].options[2] %></td>
+                                <td class="table-primary"> <%= questions[0].questions[i].options[3] %></td>
+                                <td class="table-danger"> <%= questions[0].questions[i].correctOptions[0] %></td>
                             
                             </tr>
                            
-                            <% } %>
-                    <% questions[0].questions.forEach(function(questions){ %>
+                        <% } %>                        
                         
-                       
-                        
-                    </tr>
-                    <% }) %>
-                    </table>
-                    <% } %>
-    </div>
+                    </div>
+                            </tbody>
+                </table>
+                    </div>
+                      </div>
+                      <% } %>
+</div>

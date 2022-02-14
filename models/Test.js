@@ -35,7 +35,8 @@ const testSchema = new mongoose.Schema({
 		testStartedAt:Date,
 		testCompletedAt:Date,
 		flagged:Boolean,
-		reason:String
+		reason:String,
+		score:Number
 	}],
 });
 
