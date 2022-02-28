@@ -264,36 +264,24 @@
 
     // display warnings 
    
-    let heading = document
-        .getElementById('text_from_script');
-
-    heading.innerText = warning;
-    warning = "Mr. " + warning;
-    let heading_man = document.getElementById(
-            'text_from_script_manipulated');
-    heading_man.innerText = warning;
+   
 
     function startTest(predictions){
-        
-        console.log("kya mila",predictions.length)
-        Promise.all([
-        predictions
-      //  faceLandmarksDetection.load(            faceLandmarksDetection.SupportedPackages.mediapipeFacemesh)
-       //    cocoSsd.load()
-        ]).then(predictions => {
+        console.log("n:::",predictions.length)
+        try {
             lookedAway="false";
             console.log("pehle",lookedAway)
             const facePredict = async () => {
-                console.log("kya mila",predictions.length)
+                console.log("no of people:",predictions.length)
                 console.log("predictin......",predictions)
                 if(!predictions.length) return {lookedAway:true,numberOfPeople:predictions.length,confidence:0};
                 //console.log("lookedAway",lookedAway);
-                const leftCheek = predictions[0][0].annotations.leftCheek[0];
+                const leftCheek = predictions[0].annotations.leftCheek[0];
                 console.log(leftCheek)
-                const midwayBetweenEyes = predictions[0][0].annotations.midwayBetweenEyes[0];
-                const noseTip = predictions[0][0].annotations.noseTip[0];
-                const leftIrisError = this.calculateError(predictions[0][0].annotations.leftEyeIris);
-                const rightIrisError = this.calculateError(predictions[0][0].annotations.rightEyeIris);
+                const midwayBetweenEyes = predictions[0].annotations.midwayBetweenEyes[0];
+                const noseTip = predictions[0].annotations.noseTip[0];
+                const leftIrisError = this.calculateError(predictions[0].annotations.leftEyeIris);
+                const rightIrisError = this.calculateError(predictions[0].annotations.rightEyeIris);
                 console.log("error", leftIrisError, rightIrisError);
                 let lookedAway = false;
                 if(leftIrisError+rightIrisError>0.15) {
@@ -308,7 +296,7 @@
                 } else {
                     lookedAway = false;
                 }
-                return {lookedAway,numberOfPeople:predictions.length,confidence:predictions[0][0].faceInViewConfidence};
+                return {lookedAway,numberOfPeople:predictions.length,confidence:predictions[0].faceInViewConfidence};
             }
            /* const mobilePredict = async () => {
                 const predictions = await result[1].detect(document.querySelector("video"));
@@ -324,6 +312,7 @@
                         }
                     })
             }
+            testEnded= 'false';
             const startPrediction = async() => {
                 //this.time=0;
                // warning='';
@@ -331,18 +320,27 @@
                 const result = await predict();
                 console.log("Result",result)
                 console.log("logs",logs)
-                console.log("this.time",this.time)
-              if(!this.logs[this.time])this.logs[this.time]=[0,0,0,0];
-                this.logs[this.time][0] += result.lookedAway?1:0;
-                this.logs[this.time][1] += result.numberOfPeople>1?1:0;
-                this.logs[this.time][2] += result.confidence<0.8?1:0;
-                this.logs[this.time][3] += result.mobile?1:0;
+                console.log("this.time",time)
+              if(!logs[time])logs[time]=[0,0,0,0];
+                logs[time][0] =logs[time][0]+ result.lookedAway?1:0;
+               // console.log("result 1:",logs[time][0],result.lookedAway)
+                logs[time][1] += result.numberOfPeople>1?1:0;
+                //console.log("result 2:",logs[time][1],result.numberOfPeople)
+                logs[time][2] += result.confidence<0.8?1:0;
+                logs[time][3] += result.mobile?1:0;
                 if(result.lookedAway||result.confidence<0.8) warning = 'Please look the screen ';
                 else warning = '';
                 if(result.mobile) warning += 'Using Mobile is not Allowed ';
                 else warning += '';
                 if(result.numberOfPeople>1) warning += 'More than 1 people ';
                 else warning += '';
+                let name="sanyam";
+                let heading = document.getElementById('text_from_script');
+        
+                heading.innerText = warning;
+                warning = "Mr. " + warning;
+
+                console.log("logs---",logs)
                 // if(result.lookedAway ||  result.numberOfPeople>1 ||  result.confidence<0.8 || result.mobile){
                 //     $.continuousFlags += 1;
                 // } else {
@@ -353,15 +351,16 @@
                 // }else{
                 //     $.beep.stop();
                 // }
-                if(!this.testEnded)requestAnimationFrame(startPrediction);
+                if(!testEnded)requestAnimationFrame(startPrediction);
             }
           
-            $.timeInterval = setInterval(()=>{
-                $.time += 1;
+            timeInterval = setInterval(()=>{
+                time += 1;
             }, 60*1000);
             startPrediction();
             $.isLoading = false;
-        }).catch(err => console.log("error hai!!",err));
+        }
+        catch(err){ console.log("error hai!!",err); } 
     }
 
     
