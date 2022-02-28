@@ -1,5 +1,8 @@
 <%- include('../partials/user-sidenav'); -%>
 
+
+
+
 <!-- Main content -->
 <div class="main-content" id="panel">
     <!-- Topnav -->
@@ -8,6 +11,19 @@
             <div class="col col-lg-auto text-center text-sm-left">
                 <h5 style="font-family: 'LakeShore', sans-serif" class="h2 text-white d-inline-block mb-0 custom-heading">Exam center</h5>
             </div>
+
+            <div class="m-3 w-100 text-danger" style="text-align:center;position:relative;">
+                <hr>
+                <h5 class="text-secondary">All warnings will be displayed here</h5>
+                <div id="output">
+                    <h2 style="color: white;" 
+                    id="text_from_script">
+                </h2>
+                 </div>
+            </div>
+            <button id="demo" onclick="isTestStartedFunc()">Start</button>
+            <button id="demo" onclick="endTest()">End</button>
+
             <div class="mx-auto mb-0 text-center"> 
                 <div class="container">
                     <% if(error && error.length > 0){ %>
@@ -101,13 +117,256 @@
             </div>
             <% } %>      
             <button class="btn btn-success mb-3" >Submit</button>
+           
+
         </form>
+    </div>
+    <div class="col-md-4">
+   <video id="video"  class="float" autoplay></video>
+
+    
     </div>
     <% } %>      
 
  
 
 </div>
+<!-- Require the peer dependencies of face-landmarks-detection. -->
+<script src="https://unpkg.com/@tensorflow/tfjs-core@2.4.0/dist/tf-core.js"></script>
+<script src="https://unpkg.com/@tensorflow/tfjs-converter@2.4.0/dist/tf-converter.js"></script>
+
+<!-- You must explicitly require a TF.js backend if you're not using the tfjs union bundle. -->
+<script src="https://unpkg.com/@tensorflow/tfjs-backend-webgl@2.4.0/dist/tf-backend-webgl.js"></script>
+<!-- Alternatively you can use the WASM backend: <script src="https://unpkg.com/@tensorflow/tfjs-backend-wasm@2.4.0/dist/tf-backend-wasm.js"></script> -->
+
+<!-- Require face-landmarks-detection itself. -->
+<script src="https://unpkg.com/@tensorflow-models/face-landmarks-detection@0.0.1/dist/face-landmarks-detection.js"></script>
+
+<!-- Load the coco-ssd model. 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>-->
 
 
+<!-- Adds the WASM backend to the global backend registry 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script> -->
+
+<style>
+    
+    .float{
+        position:fixed;
+        width:250px;
+        height:200px;
+        bottom:40px;
+        right:40px;
+        color:#FFF;
+        border-radius:10px;
+        text-align:center;
+        font-size:30px;
+        box-shadow: 2px 2px 3px #999;
+        z-index:100;
+    }
+</style>
+
+
+
+
+<script>
+    // -- video
+    
+    const video = document.getElementById('video');
+    const canvas = document.getElementById('canvas');
+    const constraints={
+        audio:false,
+        video:true
+    };
+    let model;
+    let   time= 0;
+    let   test= null;
+    let   questions= null;
+     let   testEnded= false;
+     let  result= null;
+     let     isLoading= false;
+     let   isTestStarted= false;
+     let   redFlags= 3;
+     let   socketId= null;
+     let   mediaRecorder= null;
+     let   logs= {};
+     let   flagged= false;
+     let   reason= null;
+     let    startedAt= null;
+     let    endedAt= null;
+     let   warning= "";
+     let   stream= null;
+     let   userId= null;
+     let    timeInterval= null;
+     let    beep= null;
+     let   continuousFlags= 0;
+    
+    //let $ = this;
+    async function init(){
+
+        try{
+            // video
+            const stream= await navigator.mediaDevices.getUserMedia(constraints);
+            handleSuccess(stream);
+            navigator.permissions.query({name: 'camera'})
+            .then((permissionObj) => {
+             console.log(permissionObj.state);
+            })
+            
+            //face detection load
+
+            .then(async ()=>{
+              
+                //facemark
+
+                model = await faceLandmarksDetection.load(
+                faceLandmarksDetection.SupportedPackages.mediapipeFacemesh);
+                console.log(faceLandmarksDetection)
+                console.log("loaded 11")
+            })
+
+            // prediction
+            .then(async ()=>{
+              const predictions = await model.estimateFaces({
+                    input: document.querySelector("video")
+                    });
+                  console.log("predictin",predictions)
+                startTest(predictions);
+            })
+           
+            .catch((error) => {
+             console.log('Got error :', error);
+            })
+        }
+        catch(e){
+            console.log('Got error :', e);
+        }
+    }
+    function handleSuccess(stream){
+        window.stream=stream;
+        video.srcObject=stream;
+
+    }
+
+    init();
+    
+    function calculateError(iris) {
+        let sumX = -iris[0][0];
+        let sumY = -iris[0][1];
+        iris.slice(1,5).forEach(point => {
+            sumX += point[0]/4;
+            sumY += point[1]/4;
+        })
+        console.log("iris",Math.pow(sumX,2)+Math.pow(sumY,2),0.5)
+        return Math.pow(Math.pow(sumX,2)+Math.pow(sumY,2),0.5)
+    } 
+    let lookedAway='';
+
+    // display warnings 
+   
+    let heading = document
+        .getElementById('text_from_script');
+
+    heading.innerText = warning;
+    warning = "Mr. " + warning;
+    let heading_man = document.getElementById(
+            'text_from_script_manipulated');
+    heading_man.innerText = warning;
+
+    function startTest(predictions){
+        
+        console.log("kya mila",predictions.length)
+        Promise.all([
+        predictions
+      //  faceLandmarksDetection.load(            faceLandmarksDetection.SupportedPackages.mediapipeFacemesh)
+       //    cocoSsd.load()
+        ]).then(predictions => {
+            lookedAway="false";
+            console.log("pehle",lookedAway)
+            const facePredict = async () => {
+                console.log("kya mila",predictions.length)
+                console.log("predictin......",predictions)
+                if(!predictions.length) return {lookedAway:true,numberOfPeople:predictions.length,confidence:0};
+                //console.log("lookedAway",lookedAway);
+                const leftCheek = predictions[0][0].annotations.leftCheek[0];
+                console.log(leftCheek)
+                const midwayBetweenEyes = predictions[0][0].annotations.midwayBetweenEyes[0];
+                const noseTip = predictions[0][0].annotations.noseTip[0];
+                const leftIrisError = this.calculateError(predictions[0][0].annotations.leftEyeIris);
+                const rightIrisError = this.calculateError(predictions[0][0].annotations.rightEyeIris);
+                console.log("error", leftIrisError, rightIrisError);
+                let lookedAway = false;
+                if(leftIrisError+rightIrisError>0.15) {
+                    lookedAway = true;
+                }
+                if (leftCheek[2] >= 18 || leftCheek[2] <= -18) {
+                    lookedAway = true;
+                } else if (midwayBetweenEyes[2] >= 5 || midwayBetweenEyes[2] <= -20 ) {
+                    lookedAway = true;
+                } else if (noseTip[2] > -18) {
+                    lookedAway = true;
+                } else {
+                    lookedAway = false;
+                }
+                return {lookedAway,numberOfPeople:predictions.length,confidence:predictions[0][0].faceInViewConfidence};
+            }
+           /* const mobilePredict = async () => {
+                const predictions = await result[1].detect(document.querySelector("video"));
+                return {mobile:predictions.some(prediction => prediction.class === 'cell phone')};
+            }*/
+            const predict = () => {
+                return Promise.all([facePredict()])
+                    .then(result => {
+                        return {
+                            ...result[0],
+                           
+                            
+                        }
+                    })
+            }
+            const startPrediction = async() => {
+                //this.time=0;
+               // warning='';
+               // testEnded= 'false';
+                const result = await predict();
+                console.log("Result",result)
+                console.log("logs",logs)
+                console.log("this.time",this.time)
+              if(!this.logs[this.time])this.logs[this.time]=[0,0,0,0];
+                this.logs[this.time][0] += result.lookedAway?1:0;
+                this.logs[this.time][1] += result.numberOfPeople>1?1:0;
+                this.logs[this.time][2] += result.confidence<0.8?1:0;
+                this.logs[this.time][3] += result.mobile?1:0;
+                if(result.lookedAway||result.confidence<0.8) warning = 'Please look the screen ';
+                else warning = '';
+                if(result.mobile) warning += 'Using Mobile is not Allowed ';
+                else warning += '';
+                if(result.numberOfPeople>1) warning += 'More than 1 people ';
+                else warning += '';
+                // if(result.lookedAway ||  result.numberOfPeople>1 ||  result.confidence<0.8 || result.mobile){
+                //     $.continuousFlags += 1;
+                // } else {
+                //     $.continuousFlags = 0;
+                // }
+                // if($.continuousFlags>25){
+                //     $.beep.start();
+                // }else{
+                //     $.beep.stop();
+                // }
+                if(!this.testEnded)requestAnimationFrame(startPrediction);
+            }
+          
+            $.timeInterval = setInterval(()=>{
+                $.time += 1;
+            }, 60*1000);
+            startPrediction();
+            $.isLoading = false;
+        }).catch(err => console.log("error hai!!",err));
+    }
+
+    
+</script>
+
+
+    
 <%- include('../partials/footer'); -%>

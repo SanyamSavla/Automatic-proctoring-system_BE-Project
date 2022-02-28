@@ -37,6 +37,9 @@ const cloudinaryStorage = require("multer-storage-cloudinary");
 const preset='ml_default';
 const url="CLOUDINARY_URL=cloudinary://838184683621473:BQkNqSaTW59pwF8lDfGlaFIyPzo@dn24716of/image/upload";
 
+const faceLandmarksDetection = require('@tensorflow-models/face-landmarks-detection');
+
+
 mongoose.Promise = global.Promise;
 const databaseUri =process.env.MONGODB_URI ;
 
