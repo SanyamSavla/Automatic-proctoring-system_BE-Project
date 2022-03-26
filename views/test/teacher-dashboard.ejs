@@ -58,8 +58,8 @@
                         <nav aria-label="breadcrumb" class="">
                             <ol class="breadcrumb breadcrumb-links breadcrumb-dark p-2 bg-white">
                                 <li class="breadcrumb-item"><a href="/"><i class="fas fa-home"></i></a></li>
-                                <li class="breadcrumb-item"><a href="/user/dashboard">Dashboard</a></li>
-                                <li class="breadcrumb-item active" aria-current="page">Classrooms</li>
+                                <li class="breadcrumb-item"><a href="/test/teacherDash">Dashboard</a></li>
+                             
                             </ol>
                         </nav>
                     </div>
@@ -68,9 +68,7 @@
                         <div class="media align-items-center">
                           
                             <div class="media-body  ml-2  d-none d-lg-block">
-                                <h4 class="mb-0  " style="color: white;font-family: 'LakeShore', sans-serif">Welcome
-                                    <b><%=user.name%>!!!</b>
-                                </h4>
+                                
                             </div>
                         </div>
                     </div>
@@ -82,9 +80,6 @@
                                     <input style="height:30px" class="form-control" name="classCode" type="text">
                                 </div>
                             </div>
-                            <button type="submit" class="btn btn-sm btn-neutral"
-                                style="background-color: white;color:#5E72E4"><i
-                                    class="fas fa-plus text-primary mr-2"></i>Attempt Exam</button>
                         </form>
                     </div>
                 </div>
@@ -157,26 +152,7 @@
                     </div>
 
                     <div class="col-xl-3 col-md-6">
-                        <div class="card card-stats">
-                            <!-- Card body -->
-                            <div class="card-body">
-                                <div class="row">
-                                    <div class="col">
-
-                                        <h5 class="card-title text-uppercase text-muted mb-0"> <%=user.name%>'s Pointer
-                                           </h5>
-                                        
-                                        <span class="h2 font-weight-bold mb-0">0%</span>
-                                     
-                                    </div>
-                                    <div class="col-auto">
-                                        <div class="icon icon-shape bg-gradient-info text-white rounded-circle shadow">
-                                            <i class="ni ni-chart-bar-32"></i>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
+                       
                     </div>
 
                 </div>
@@ -194,7 +170,10 @@
                     <div class="card bg-secondary border-0 mb-0">
                       <div class="card-body px-lg-5 py-lg-5">
                         <div class="text-center text-muted mb-4">
-                          <small>Login to Exam</small>
+                          <small></small>
+                          <h4 class="mb-0  " style="color: black;font-family: 'LakeShore', sans-serif">Welcome
+                            <b><%=user.name%>!!!</b>
+                        </h4>
                           <% if(error && error.length > 0){ %>
                             <div class="alert alert-danger" role="alert">
                               <%= error %>
@@ -205,6 +184,7 @@
                               </div>
                               <% } %> 
                         </div>
+                        <!-- 
                         <form action="/user/login" method="post">
                           <div class="form-group mb-3">
                             <div class="input-group input-group-merge input-group-alternative">
@@ -226,6 +206,8 @@
                             <button type="submit" class="btn btn-primary my-4">Sign in</button>
                           </div>
                         </form>
+
+                        -->
                       </div>
                     </div>
                    

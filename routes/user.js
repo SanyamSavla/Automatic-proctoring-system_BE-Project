@@ -3,7 +3,7 @@ const express = require('express');
       passport = require('passport');
       userModel = require('../models/user');
       imgModel = require('../models/image');
-  
+let alert = require('alert'); 
 //var classModel = require('../models/class');
 const bcrypt = require('bcryptjs');  
    //  multer = require('multer');
@@ -36,22 +36,31 @@ cloudinary.config({
 
 app.use(express.static('uploads'));
   
-router.get('/test2/:id', isLoggedIn, function (req, res, next) {
+router.get('/test2/:id', isLoggedIn,async function (req, res) {
     try{
    var dataToSend;
    var url = 'http://127.0.0.1:5000/camera/'+req.user._id.toString() ;
-   res.render('user/camera');
-   var b;
-   request(url, function (error, response, body) {
-      console.log('body:', body);
-    
-    });
    
-     } catch (err) {
-      return next({
-          status: 400,
-          message: err.message
+   var b;
+   let ans;
+   await request(url, async function (error, response, body) {
+      console.log('body:', body);
+      ans=body;  
+      console.log('error:', error);
+
+      if(body=="Unknown"){
+        alert("Not known!")
+      }
+      else{
+        alert(body, "found")
+      }
+
+
       });
+      await res.render('user/camera');
+      return;
+     } catch (err) {
+      console.log(err)
   }
 
 });
@@ -121,6 +130,7 @@ router
                 email:req.body.email,
                 year:req.body.year,
                 password:req.body.password,
+                
             });
         //     newUser.save();
             req.flash("success", "Successfully Updated!");

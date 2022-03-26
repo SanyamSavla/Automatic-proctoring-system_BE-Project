@@ -21,13 +21,15 @@ def main():
 def camera(userid):
     
     print("android path python app.py :"+ userid)
+    print("Delat")
     p=subprocess.Popen(
         ['python', 'main.py',userid],stdout=subprocess.PIPE,
     stderr=subprocess.PIPE
     )
+    print("delay")
     (stdoutdata, stderrdata) = p.communicate()
     
-    print(stdoutdata.decode('utf-8'))
+    print("s"+stdoutdata.decode('utf-8'))
     return stdoutdata.decode('utf-8')
 
 

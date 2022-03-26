@@ -6,6 +6,7 @@ const testSchema = new mongoose.Schema({
 	},
 	testName:String,
 	testcode:String,
+	course:String,
 	settings:{
 		testDuration :String,
 		disableTabChange : Boolean,
@@ -25,19 +26,26 @@ const testSchema = new mongoose.Schema({
 		}],
 		qType:String
 	}],
+	logs:[{
+		userId:{
+			type: mongoose.Schema.Types.ObjectId,
+			ref:'User',
+		},
+		logs:{}
+	}],
 	responses: [{
 		userId:{
 			type: mongoose.Schema.Types.ObjectId,
 			ref:'User',
 		},
-		logs:{},
 		answers:[],
 		testStartedAt:Date,
 		testCompletedAt:Date,
 		flagged:Boolean,
 		reason:String,
-		score:Number
-	}],
+		score:{type: Number,
+			unique: true}
+	}] ,
 });
 
 

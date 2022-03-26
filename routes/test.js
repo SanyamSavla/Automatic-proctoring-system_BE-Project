@@ -91,15 +91,18 @@ router.post("/submit-exam/:testid",async  function(req, res)  {
 	try {   
         const quest =  await Test.findById(req.params.testid);        
         const length=quest.questions.length;
-
+        const res=quest.responses.length;
+        //console.log(quest);
         const correct=[]; // correct answers
-       
+       const logs=[];
         
         for (i = 0; i < length; i++) {
             const corr= quest.questions[i].correctOptions[0];
            // console.log(corr)
                 correct.push(corr);
             }
+        
+        
         console.log(correct);
 		const answers = []; // answers of student
         const responses = [];
@@ -111,6 +114,10 @@ router.post("/submit-exam/:testid",async  function(req, res)  {
                                 answer
                             );
                         }
+        //LOGS
+        //res.json([{     logs:logs      }])
+                       
+
                         //calculate score 
         var c=0;
         for (i = 0; i < length; i++) {
@@ -127,14 +134,22 @@ router.post("/submit-exam/:testid",async  function(req, res)  {
         responses.push({
             userId:req.user,
             answers:answers,
-            score:c
+            score:c,
+            //logs:data
            });
         
        // const question =  await Test.findById(req.params.testid);
         
         //Test.updateOne({_id:req.params.testid},{$push:{"questions" : questions}})
       //  question.questions=questions
-        const question = await Test.updateOne({_id:req.params.testid},{$push:{"responses" : responses}})
+        
+        /*for (i = 0; i < res; i++) {
+            if(quest.responses[i].userId==req.user){
+                }  
+                   
+       }*/
+       const question = await Test.updateOne({_id:req.params.testid},{$push:{"responses" : responses}})
+            
       //  const test = await Test.create({...reqBody,orgId: orgId})  
         console.log("addeed", responses);
         var obj={
@@ -142,15 +157,128 @@ router.post("/submit-exam/:testid",async  function(req, res)  {
             score:c
         }
         const active_user = await userModel.updateOne({_id:req.user._id},{$push:{"score" : obj}})
-        req.flash("success","Added");
-		res.redirect("back");
+
+       req.flash("success","Added");
+	    res.redirect("/test/userDash");
+        
 	} catch (err) {
 		console.log(err);
 		req.flash(err, err.message);
-		res.redirect("back");
+		res.redirect("/test/userDash");
 	}
 });
 
+router.post("/submit-log/:testid",async  function(req, res){
+    try {  
+        const data = req.body;
+        const responses = [];
+        responses.push({
+            userId:req.user,
+            logs:data
+           });
+        const question = await Test.updateOne({_id:req.params.testid},{$push:{"logs" : responses}})
+        console.log("find ", question);
+        
+        console.log("addeed -- ", responses);
+        console.log('body: ',  req.body);
+        console.log('body: ',  req.body.logs);
+   
+} catch (err) {
+    console.log(err);
+    req.flash(err, err.message);
+    //res.redirect("back");
+}
+
+});
+
+var collectionOne=[];
+router.get('/logs/:testid', function (req, res, next) {
+    try {
+     
+        console.log(req.params.testid);
+       
+            userModel.find().exec(function(err, result) {
+              if (err) {
+                throw err;
+              } else {
+                for (i=0; i<result.length; i++) {
+                  collectionOne[i] = result[i];
+                  console.log("coll-",collectionOne[i])
+                }
+             }
+            });
+            
+        Test.find({_id: req.params.testid}, function (err, allDetails) {
+            if (err) {
+                console.log(err);
+            } else {
+                
+                console.log(",,",allDetails)
+                res.render("test/logs", { testid:req.params.testid , tests:allDetails,user:collectionOne })
+            }
+        }) 
+
+      
+        }
+    catch (err) {
+        return next({
+            status: 400,
+            message: err.message
+        });
+    }
+            
+          
+});
+
+router.get('/stats/:testid', function (req, res, next) {
+    try {
+        console.log(req.user._id);
+        Test.find({_id: req.params.testid}, function (err, allDetails) {
+            if (err) {
+                console.log(err);
+            } else {
+
+                console.log(",,",allDetails)
+                res.render("test/userstats", { testid:req.params.testid , tests:allDetails,user:req.user._id, username:req.user.name })
+            }
+        }) 
+
+      
+        }
+    catch (err) {
+        return next({
+            status: 400,
+            message: err.message
+        });
+    }
+            
+          
+});
+
+router.get('/:testid/:userid/logs', function (req, res, next) {
+    try {
+        
+        Test.find({_id: req.params.testid}, function (err, allDetails) {
+            if (err) {
+                console.log(err);
+            } else {
+
+                console.log(",,",allDetails)
+                res.render("test/logstats", { testid:req.params.testid , tests:allDetails})
+            }
+        }) 
+
+      
+        }
+    catch (err) {
+        return next({
+            status: 400,
+            message: err.message
+        });
+    }
+            
+          
+});
 
 router.get('/results', function (req, res, next) {
     errorMsg = ""

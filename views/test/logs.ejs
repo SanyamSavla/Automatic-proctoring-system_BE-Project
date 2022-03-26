@@ -1,0 +1,73 @@
+<%- include('../partials/teacher-sidenav'); -%>
+
+<!-- Main content -->
+<div class="main-content" id="panel">
+    <!-- Topnav -->
+    <div class="container-fluid py-3 bg-primary top-padding" style="border-bottom:0.0625rem solid #e9ecef33 !important;" >
+        <div class="row align-items-center">
+            <div class="col col-lg-auto text-center text-sm-left">
+                <h5 style="font-family: 'LakeShore', sans-serif" class="h2 text-white d-inline-block mb-0 custom-heading">Exam center</h5>
+            </div>
+            <div class="mx-auto mb-0 text-center"> 
+               
+            </div>
+            
+        </div>
+    </div>
+    <div class="main-content" id="panel">
+    
+        <div>             
+                     
+             
+                          
+             <br>
+             <br>
+            <div class="container w-75 mx-auto  p-0" > 
+                
+                <% if(tests!=null) { %>
+                    <table class="table">
+                    <tr> 
+                        <div class="fixed-table-container"> 
+                          
+                            <thead class="thead-light" style="" >
+        
+                                <th style="font-size:15px;font-weight: bold;">User ID </th>
+                                <th style="font-size:15px;font-weight: bold;">test ID</th>
+                                <th style="font-size:15px;font-weight: bold;">Name</th>
+                                <th style="font-size:15px;font-weight: bold;">DURATION </th>
+                                <th style="font-size:15px;font-weight: bold;">TOTAL SCORE </th>
+                              
+                            </thead>
+                              
+                        
+                    </tr>
+                   
+                    <% for(let j=0; j < tests[0].logs.length; j++) { %> 
+                        
+                    <tr class="table-primary" style="color: black;">
+                       
+                        <td><%= tests[0].logs[j].userId%></td>
+                        
+                        <td><a href="/test/<%=testid%>/<%=tests[0].logs[j].userId%>/logs"> <%= testid %> </a> </td>
+                        
+                       
+                        <% } %>
+                    </tr>
+                 
+                    
+                    </div> 
+                    <% }%>
+                    </table>
+                   
+            </div>
+        </div>
+     
+    <!-- Header -->
+    <div class="col-md-10">
+    
+       <br>
+    </div>
+
+ 
+
+</div>

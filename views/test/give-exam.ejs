@@ -53,7 +53,6 @@
     
         <div>             
                      
-             
                           
              <br>
              <br>
@@ -71,7 +70,7 @@
                                 <th style="font-size:15px;font-weight: bold;">CODE</th>
                                 <th style="font-size:15px;font-weight: bold;">DURATION </th>
                                 <th style="font-size:15px;font-weight: bold;">SCORE </th>
-                              
+                                <th style="font-size:15px;font-weight: bold;">APPEAR </th>
                             </thead>
                               
                         
@@ -81,9 +80,12 @@
                         <td><%= test._id%></td>
                         <td><%= test.testName %></td>
                         <td><a href="/test/<%=test._id%>/exam"> <%= test.testcode%> </a> </td>
-                        <td><%= test.settings.testDuration %></td>
-                        <td> <%= test.settings.totalScore %></td>
-                       
+                        <td><%= test.settings.testDuration %> seconds</td>
+                        <td> <%= test.settings.totalScore %></td>                        
+                       <td> 
+                           <a href="/user/test2/<%=user._id%>"> <button class="btn btn-danger mb-3" >Check</button> </a> 
+                            <a href="/test/<%=test._id%>/exam"> <button class="btn btn-success mb-3" >Give</button> </a> 
+                        </td>
                     
                     </tr>
                     <% }) %>
@@ -103,5 +105,3 @@
 
 </div>
 
-
-<%- include('../partials/footer'); -%>

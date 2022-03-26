@@ -19,11 +19,16 @@
                     <h2 style="color: white;" 
                     id="text_from_script">
                 </h2>
+
+               
+
                  </div>
             </div>
-            <button id="demo" onclick="isTestStartedFunc()">Start</button>
-            <button id="demo" onclick="endTest()">End</button>
-
+           
+            <div class="preload">
+                <img src="http://i.imgur.com/KUJoe.gif">
+                </div>
+                
             <div class="mx-auto mb-0 text-center"> 
                 <div class="container">
                     <% if(error && error.length > 0){ %>
@@ -68,34 +73,27 @@
                 <br>
                 <% } %>
             </div>
-            <!-- 
-            <div class="col-right ml-auto mr-3  d-sm-block">
-                <div class="media align-items-center">
-                    <span class="avatar avatar-sm rounded-circle" >
-                        <img alt="" src="../../Python/uploads/1234.png" style="width:max-content">
-                    </span>
-                    <div class="media-body  ml-2  d-none d-lg-block">
-                        <h4 class="mb-0  " style="color: white;font-family:'Lobster', cursive;">Welcome
-                            <b><%=user.name%></b>
-                        </h4>
-                    </div>
-                </div>
-            </div>
-            -->
+         
         </div>
     </div>
     
     <!-- Header -->
+    <div class="content" style="display:none;"> 
     <div class="col-md-10" style="color: white;">
+        <div>Test ends in <span id="time">  <%= questions[0].settings.testDuration %>.00 </span> seconds!</div>
         <br>
         <% if(questions!=null) { %>
 
+            <span id="x">
+                <%= questions[0].settings.testDuration %>
+            </span>
+            
             <% for(let i=0; i < questions[0].questions.length; i++) { %> 
         <div  style="width: 100%;color: black;  background-color: #f1f1f1;" class="card">
-        <form action="/test/submit-exam/<%=tests%>" method="post"> 
+        <form name="test" action="/test/submit-exam/<%=tests%>" method="post"> 
             <div>
                 <div class="card-body">
-                    <h5 class="card-title" style="color: black;">(Q<%=i%>) <%= questions[0].questions[i].questionText%></h5>
+                    <h5 class="card-title" style="color: black;">(Q<%=i+1%>) <%= questions[0].questions[i].questionText%></h5>
                 </div>
                 <div>
                     <div>
@@ -116,13 +114,28 @@
             
             </div>
             <% } %>      
-            <button class="btn btn-success mb-3" >Submit</button>
-           
-
+            
+            <button class="btn btn-success mb-3" id="dem" type="submit" onclick="endTest()"> END</button>
+        
         </form>
+
+        <!--
+        <button class="btn btn-success mb-3" >Submit</button>
+            <button  id="demo" >End </button>
+            -->
+    </div>
     </div>
     <div class="col-md-4">
-   <video id="video"  class="float" autoplay></video>
+   <video id="video"  class="float" autoplay>
+    <div id="output">
+        <h2 style="color: white;" 
+        id="text_from_script">
+    </h2>
+
+   
+
+     </div>
+   </video>
 
     
     </div>
@@ -131,8 +144,9 @@
  
 
 </div>
-<!-- Require the peer dependencies of face-landmarks-detection. -->
-<script src="https://unpkg.com/@tensorflow/tfjs-core@2.4.0/dist/tf-core.js"></script>
+
+
+
 <script src="https://unpkg.com/@tensorflow/tfjs-converter@2.4.0/dist/tf-converter.js"></script>
 
 <!-- You must explicitly require a TF.js backend if you're not using the tfjs union bundle. -->
@@ -142,19 +156,52 @@
 <!-- Require face-landmarks-detection itself. -->
 <script src="https://unpkg.com/@tensorflow-models/face-landmarks-detection@0.0.1/dist/face-landmarks-detection.js"></script>
 
-<!-- Load the coco-ssd model. 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>-->
+
+<!-- ---------------- -->
+
+<!-- Load TensorFlow.js. This is required to use coco-ssd model. -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script>
+
+<!-- Load the coco-ssd model. -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
 
 
-<!-- Adds the WASM backend to the global backend registry 
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-wasm/dist/tf-backend-wasm.js"></script> -->
+<!-- Adds the CPU backend to the global backend registry 
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu"></script>-->
 
 <style>
-    
+
+    .preload { 
+        width:100px;
+        height: 100px;
+        position: fixed;
+        top: 50%;
+        left: 50%;
+    }
+.loader {
+    border: 16px solid #f3f3f3;
+    border-radius: 50%;
+    border-top: 16px solid #3498db;
+    width: 120px;
+    height: 120px;
+    -webkit-animation: spin 2s linear infinite; /* Safari */
+    animation: spin 2s linear infinite;
+  }
+  
+  /* Safari */
+  @-webkit-keyframes spin {
+    0% { -webkit-transform: rotate(0deg); }
+    100% { -webkit-transform: rotate(360deg); }
+  }
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
     .float{
         position:fixed;
-        width:250px;
-        height:200px;
+        width:150px;
+        height:120px;
         bottom:40px;
         right:40px;
         color:#FFF;
@@ -167,19 +214,37 @@
 </style>
 
 
-
-
 <script>
-    // -- video
     
+	const quest = <%- JSON.stringify(questions) %>;
+    let exam_time= quest[0].settings.testDuration;
+    console.log("X",quest[0].settings.testDuration)
+   // tf.env().set('WEBGL_CPU_FORWARD', false);
+    // -- video 
+    //tf.env().set('WEBGPU_CPU_FORWARD', false);
+   // tf.env().set('WEBGL_CPU_FORWARD', false);
+   $(function() {
+    $(".preload").fadeOut(10000, function() {
+        $(".content").fadeIn(12000);        
+    });
+});
+/*
+window.addEventListener("beforeunload", function (e) {
+    var confirmationMessage = "\o/";
+  
+    (e || window.event).returnValue = confirmationMessage;     // Gecko + IE
+    return confirmationMessage;                               
+  }); */
+
+  
+  
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     const constraints={
         audio:false,
         video:true
     };
-    let model;
-    let   time= 0;
+     let   time= 0;
     let   test= null;
     let   questions= null;
      let   testEnded= false;
@@ -197,14 +262,14 @@
      let   warning= "";
      let   stream= null;
      let   userId= null;
-     let    timeInterval= null;
-     let    beep= null;
-     let   continuousFlags= 0;
+     let    timeInterval;
+  
     
     //let $ = this;
     async function init(){
 
         try{
+            
             // video
             const stream= await navigator.mediaDevices.getUserMedia(constraints);
             handleSuccess(stream);
@@ -214,7 +279,6 @@
             })
             
             //face detection load
-
             .then(async ()=>{
               
                 //facemark
@@ -227,11 +291,26 @@
 
             // prediction
             .then(async ()=>{
-              const predictions = await model.estimateFaces({
+                
+             /* const predictions = await model.estimateFaces({
                     input: document.querySelector("video")
                     });
-                  console.log("predictin",predictions)
-                startTest(predictions);
+                  console.log("predictin",predictions)*/
+                  //let $ = this;
+                  
+                  //document.querySelector("#panel").requestFullscreen({ navigationUI: "show" });
+                  //document.documentElement.requestFullscreen();
+                  startTest();
+                 /* document.onkeypress = function(evt){console.log(evt)};
+                 document.documentElement.requestFullscreen().then(()=>{
+                    document.fullscreenEnabled=true;
+                      startTest(predictions);
+                     // console.log('isteststarted',this.isTestStarted);
+                     // this.startedAt = new Date();
+                  }).catch(err => {
+                      alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
+                  });*/
+               // startTest(predictions);
             })
            
             .catch((error) => {
@@ -257,32 +336,35 @@
             sumX += point[0]/4;
             sumY += point[1]/4;
         })
-        console.log("iris",Math.pow(sumX,2)+Math.pow(sumY,2),0.5)
+       // console.log("iris",Math.pow(sumX,2)+Math.pow(sumY,2),0.5)
         return Math.pow(Math.pow(sumX,2)+Math.pow(sumY,2),0.5)
     } 
     let lookedAway='';
-
     // display warnings 
    
-   
-
-    function startTest(predictions){
-        console.log("n:::",predictions.length)
+     
+   let flag=1;
+    function startTest(){
+     //   console.log("n:::",predictions.length)
         try {
             lookedAway="false";
-            console.log("pehle",lookedAway)
+          //  console.log("pehle",lookedAway)
             const facePredict = async () => {
-                console.log("no of people:",predictions.length)
-                console.log("predictin......",predictions)
+                const predictions = await model.estimateFaces({
+                    input: document.querySelector("video")
+                    });
+
+              //  console.log("no of people:",predictions.length)
+              // console.log("predictin......",predictions)
                 if(!predictions.length) return {lookedAway:true,numberOfPeople:predictions.length,confidence:0};
-                //console.log("lookedAway",lookedAway);
+               //console.log("lookedAway",lookedAway);
                 const leftCheek = predictions[0].annotations.leftCheek[0];
-                console.log(leftCheek)
+               // console.log(leftCheek)
                 const midwayBetweenEyes = predictions[0].annotations.midwayBetweenEyes[0];
                 const noseTip = predictions[0].annotations.noseTip[0];
                 const leftIrisError = this.calculateError(predictions[0].annotations.leftEyeIris);
                 const rightIrisError = this.calculateError(predictions[0].annotations.rightEyeIris);
-                console.log("error", leftIrisError, rightIrisError);
+             //  console.log("error", leftIrisError, rightIrisError);
                 let lookedAway = false;
                 if(leftIrisError+rightIrisError>0.15) {
                     lookedAway = true;
@@ -296,39 +378,112 @@
                 } else {
                     lookedAway = false;
                 }
+                
                 return {lookedAway,numberOfPeople:predictions.length,confidence:predictions[0].faceInViewConfidence};
             }
-           /* const mobilePredict = async () => {
-                const predictions = await result[1].detect(document.querySelector("video"));
-                return {mobile:predictions.some(prediction => prediction.class === 'cell phone')};
-            }*/
-            const predict = () => {
-                return Promise.all([facePredict()])
+            let ans;
+            let count;
+            let anst;
+            let mob;
+
+            const mobilePredict = async () => {
+                const img = document.getElementById('video');
+              await  cocoSsd.load().then(model => {
+                    // detect objects in the image.
+                    model.detect(img).then(predictions => {
+                      //console.log(img)
+                      //console.log('Predictions: ');
+                      //console.log(predictions);
+                      const mobile= predictions.some(
+                                (prediction) => prediction.class === "cell phone"
+                              );
+                              console.log("mobile",mobile)
+                              ans=mobile;
+                              return {
+                                
+                                ans:mobile
+                              };
+                              
+                    });
+                    console.log(ans)
+                    
+                  });
+                    ///.then (mod => {
+                       // count=0;
+                     /*   mod[0].detect(img).then(predictions => {
+                           
+                            console.log("aaa",predictions);
+                            console.log("aaa",predictions.some(
+                                (prediction) => prediction.class === "cell phone"
+                              ));
+                             const mobile= predictions.some(
+                                (prediction) => prediction.class === "cell phone"
+                              );
+                              console.log("mobile",mobile)
+                              
+                              if(mobile){
+                                  count=1;
+                                  mob="true";
+                              }
+                              else{
+                                  count=0;
+                                  mob="false";
+                              }                    
+                            console.log("count first",count)
+                            
+                            console.log("anst",mob)
+                            return {
+                                mob,
+                                count,
+                                anst:mobile,
+                                mobile:mobile
+                              };
+                    }) 
+              })*/
+              return {
+                                
+                mobile:ans
+              };
+            };
+
+           
+
+            const predict =  () => {
+                // console.log("anst",mob)
+                return Promise.all([ facePredict(),mobilePredict()])
+                
                     .then(result => {
+
                         return {
                             ...result[0],
+                            ...result[1]
                            
                             
                         }
                     })
             }
-            testEnded= 'false';
+          // testEnded='false';
+           
             const startPrediction = async() => {
-                //this.time=0;
-               // warning='';
-               // testEnded= 'false';
+                
                 const result = await predict();
-                console.log("Result",result)
-                console.log("logs",logs)
+                
+              //  console.log("Result",result)
+                //console.log("logs",logs)
+                
                 console.log("this.time",time)
-              if(!logs[time])logs[time]=[0,0,0,0];
+                
+               
+                if(!logs[time])logs[time]=[0,0,0,0];
                 logs[time][0] =logs[time][0]+ result.lookedAway?1:0;
                // console.log("result 1:",logs[time][0],result.lookedAway)
                 logs[time][1] += result.numberOfPeople>1?1:0;
                 //console.log("result 2:",logs[time][1],result.numberOfPeople)
                 logs[time][2] += result.confidence<0.8?1:0;
-                logs[time][3] += result.mobile?1:0;
-                if(result.lookedAway||result.confidence<0.8) warning = 'Please look the screen ';
+                logs[time][3] += result.mobile?1:0
+                if(result.lookedAway||result.confidence<0.8) {
+                    warning = 'Please look the screen ';
+                }
                 else warning = '';
                 if(result.mobile) warning += 'Using Mobile is not Allowed ';
                 else warning += '';
@@ -352,20 +507,156 @@
                 //     $.beep.stop();
                 // }
                 if(!testEnded)requestAnimationFrame(startPrediction);
-            }
-          
-            timeInterval = setInterval(()=>{
-                time += 1;
-            }, 60*1000);
+            };   
+           timeInterval = setInterval(() => {
             startPrediction();
-            $.isLoading = false;
+            time += 1;
+          }, 20*1000);
+          //requestAnimationFrame(startPrediction);
         }
         catch(err){ console.log("error hai!!",err); } 
     }
 
-    
+   /* $("#demo").on("click", function() {
+        
+        let data ={logs:logs}
+        console.log("logs",data)
+        var xhr = new XMLHttpRequest();
+        
+        xhr.open('POST', '/test/submit-exam/${urlencode(tests)}');
+        xhr.onload = function(data) {
+            console.log('loaded', this.responseText);
+        };
+        xhr.setRequestHeader('Content-Type', 'application/json');
+        xhr.send(JSON.stringify(data));
+        
+        this.stream.getTracks().forEach(function (track) {
+            track.stop();
+          });
+          testEnded='false';
+          
+        clearInterval(timeInterval);
+
+    });
+
+    $('#demo').on('submit', function() {
+        console.log(logs)
+        this.stream.getTracks().forEach(function (track) {
+            track.stop();
+          });
+          testEnded='false';
+          
+        clearInterval(timeInterval);
+        $.ajax({
+            type: "POST",
+            url: "/test/submit-exam/${urlencode(tests)}",
+            dataType: 'json',
+            data: { logs: logs },
+            
+            success: function(data) {
+                console.log("data",data)
+            },
+            error: function(jqXHR, textStatus, err) {
+                alert('text status '+textStatus+', err '+err)
+            }
+        });
+        
+        });
+  /*  const button = document.getElementById('demo');
+    button.addEventListener('submit', async event => {
+    let data ={logs};
+    console.log("data ",data)
+     let options = {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json; "
+            },
+            body: JSON.stringify(data)
+        }
+        event.preventDefault();
+        const promise = await fetch('/test/submit-exam/${urlencode(tests)}', options);
+        const json =  promise.json();
+        console.log(json);
+      
+          
+    });
+*/ 
+   async function endTest() {
+        
+        this.stream.getTracks().forEach(function (track) {
+          track.stop();
+        });
+        testEnded='false';
+        clearInterval(timeInterval);
+        let data ={logs}
+          console.log("logs",data)
+          $.ajax({
+            type: "POST",
+            url: `http://localhost:3000/test/submit-log/<%=tests%>`,
+           
+            data: { logs: logs },
+            
+            success: function(data) {
+                console.log("data",data)
+            },
+            error: function(jqXHR, textStatus, err) {
+                alert('text status '+textStatus+', err '+err)
+            }   
+        });
+        /*
+        let data ={logs}
+          console.log("logs",data)
+        let options = {
+            method: 'POST',
+            headers: {
+                "Content-type": "application/json; "
+            },
+            body: JSON.stringify(data)
+        }
+        const promise = await  fetch('/test/submit-exam/:testid', options);
+        const json = await promise.json();
+         console.log(json);*/
+         /* $(document).ready(function () {
+            $("#demo").click(function () {
+                $.post("http://localhost:3000/test/submit-exam/${tests}",
+                {
+                   logs:logs
+                },
+                function (data, status) {
+                   console.log(data);
+             });
+            });
+         });
+            
+      
+       
+        console.log("time interval stop",this.timeInterval)
+       */
+      }
+    var x= 1;
+      var timeleft = Number(exam_time)+Number(x);
+      console.log(timeleft)
+    var downloadTimer = setInterval(function(){
+    timeleft--;
+    document.getElementById("time").textContent = timeleft;
+    if(timeleft <= 0)
+        clearInterval(downloadTimer);
+    },1000);
+
+
+      window.onload=function(){ 
+        console.log("auto submit")
+      window.setTimeout(function() { 
+          document.test.submit();
+          endTest(); 
+          console.log(exam_time)   
+      }, ((exam_time)*1000));
+      };
+
+  /*    $(window).blur(function() {
+        alert('You are not allowed to leave page blah blah');
+        //do something else
+     });
+    */
 </script>
 
-
-    
-<%- include('../partials/footer'); -%>

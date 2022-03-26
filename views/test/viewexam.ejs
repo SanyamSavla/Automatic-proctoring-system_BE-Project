@@ -31,7 +31,7 @@
                             <th style="font-size:15px;font-weight: bold;">CODE</th>
                             <th style="font-size:15px;font-weight: bold;">DURATION </th>
                             <th style="font-size:15px;font-weight: bold;">SCORE </th>
-                          
+                            <th style="font-size:15px;font-weight: bold;">LOGS </th>
                         </thead>
                           
                     
@@ -43,7 +43,7 @@
                     <td><a href="/test/<%=test._id%>/addquestion"> <%= test.testcode%> </a> </td>
                     <td><%= test.settings.testDuration %></td>
                     <td> <%= test.settings.totalScore %></td>
-                   
+                    <td><a href="/test/logs/<%=test._id%>"> LOGS </a></td>
                 
                 </tr>
                 <% }) %>

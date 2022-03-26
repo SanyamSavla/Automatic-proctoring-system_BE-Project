@@ -13,7 +13,7 @@ import time
 from bson.objectid import ObjectId
 # app = Flask(__name__)
 
-capture_duration = 20
+capture_duration = 10
 #webcam #0
 video_capture = cv2.VideoCapture(0)
 

@@ -13,6 +13,7 @@ const userschema = new mongoose.Schema({
 		default: false
 	},
     name: {type: String},
+    course:Array,
     class:{type: String,},
     rollnumber: {type: String, },
     email: {type: String,},

@@ -20,11 +20,11 @@
                 </div>
                 <% } %>
 
-                <% if(successMsg && successMsg.length > 0){ %>
+                <% if(username ){ %>
                 <div class="alert alert-success fade show " role="alert">
                     <span class="alert-icon"><i class="ni ni-like-2"></i></span>
-                    <span class="alert-text mr-2"><strong>Success!</strong>
-                        <%= successMsg %>
+                    <span class="alert-text mr-2"><strong></strong>
+                     Welcome   <%= username %> and check your logs
                     </span>
                     <button type="button" class="close" data-dismiss="alert" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
@@ -65,35 +65,41 @@
                         <div class="fixed-table-container"> 
                           
                             <thead class="thead-light" style="" >
-                                <th style="font-size:15px;font-weight: bold;">Sr. No </th>
-                                <th style="font-size:15px;font-weight: bold;">ID </th>
+                                <th style="font-size:15px;font-weight: bold;color:black"> Attempt  </th>
+                                <th style="font-size:15px;font-weight: bold;"> Minute  </th>
+                                <th style="font-size:15px;font-weight: bold;"> looked away </th>
+                                <th style="font-size:15px;font-weight: bold;">More than 1 person found</th>
+                                <th style="font-size:15px;font-weight: bold;">no person</th>
+                                <th style="font-size:15px;font-weight: bold;">Object found </th>
                                 
-                                <th style="font-size:15px;font-weight: bold;">SCORE</th>
-                                <th style="font-size:15px;font-weight: bold;">LOGS </th>
-                               
                               
                             </thead>
                               
                         
                     </tr>
                    
-                        <% for(let i=0; i < user.score.length; i++) { %> 
+                        <% for(let j=0; j < tests[0].logs.length; j++) { %> 
+                            <% if(tests[0].logs[j].userId = user ){  %>
+                            <% for(let i=0; i < tests[0].logs[j].logs.logs.length; i++) { %> 
+                              
                     <tr class="table-primary" style="color: black;">
-                        <td><%= i+1%></td>
-                        <td><%= user.score[i].test%></td>    
-
-
-                        <td> <%= user.score[i].score%>/<%=tests[1].settings.totalScore  %> </td>
-                        <td> <a href="/test/stats/<%=user.score[i].test%>/"> Logs </a></td>
+                        <td>No. <%= j %></td>
+                        <td><%=i %></td>
+                        <td><%= tests[0].logs[j].logs.logs[i][0]%></td>
                       
+                        <td><%= tests[0].logs[j].logs.logs[i][1] %></td>
+                        <td> <%= tests[0].logs[j].logs.logs[i][2]%> </td>
+                        <td><%= tests[0].logs[j].logs.logs[i][3] %></td>
                        
                     
                     </tr>
-                    <% } %>
+                    <% }} %>
                     </div> 
-                    </table>
                     <% } %>
+                    </table>
+                   
             </div>
+            <% } %>
         </div>
      
     <!-- Header -->
@@ -106,24 +112,3 @@
 
 </div>
 
-<script>
-
-    let count=0;
-	const test = <%- JSON.stringify(tests) %>;
-    const user= <%- JSON.stringify(user) %>;
-
-    var count = function() {
-     for(let i=0; i < user.score.length; i++) {
-        for(let j=0; j < tests.length; j++) { 
-            if(user.score[i].test == tests[j]._id) { 
-                return tests[j]
-                }
-        }
-    }
-};
-    var input = document.getElementById("test");
-    input.value = count();  
-
-</script>
-
-<%- include('../partials/footer'); -%>
