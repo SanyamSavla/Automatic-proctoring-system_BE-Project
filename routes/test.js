@@ -58,8 +58,24 @@ router.get('/give-exam', function (req, res, next) {
     })   
           
 });
-
-router.get('/:testid/exam', function (req, res, next) {
+let flag=0;
+router.get('/:testid/exam', async function (req, res, next) {
+    
+    await userModel.find({_id: req.user._id} , (function(err, result) {
+        if (err) {
+          
+          console.log(err);
+        } else {
+          for (i=0; i<result[0].score.length; i++) {
+            if(result[0].score[i].test==req.params.testid){
+                    flag+=1;
+            }
+          }
+          console.log("flag--",flag)
+       }
+      })
+    );
+    
     errorMsg = ""
     successMsg = ""
     var message = req.flash("error");
@@ -69,7 +85,10 @@ router.get('/:testid/exam', function (req, res, next) {
         req.session.errorMsg = undefined
         req.session.successMsg = undefined
     }
-    Test.find({_id: req.params.testid}, function (err, allDetails) {
+    console.log("flag",flag)
+    flag=0;
+    if(flag<1){
+   await Test.find({_id: req.params.testid}, function (err, allDetails) {
         if (err) {
             console.log(err);
         } else {res.render('test/exam', {
@@ -81,7 +100,15 @@ router.get('/:testid/exam', function (req, res, next) {
             hasError: message.length > 0,
         })   
         }
-    }) 
+    })
+    
+}
+    else{
+        
+        req.flash("success","EXAM GIVEN ALREADY");
+	    res.redirect("/test/userDash");
+
+    }
             
           
 });
@@ -170,11 +197,15 @@ router.post("/submit-exam/:testid",async  function(req, res)  {
 
 router.post("/submit-log/:testid",async  function(req, res){
     try {  
-        const data = req.body;
+        const data = req.body.logs;
+        const date=req.body.date;
+        const end= req.body.end;
         const responses = [];
         responses.push({
             userId:req.user,
-            logs:data
+            logs:data,
+            testStartedAt:date,
+            testCompletedAt:end
            });
         const question = await Test.updateOne({_id:req.params.testid},{$push:{"logs" : responses}})
         console.log("find ", question);
@@ -182,6 +213,7 @@ router.post("/submit-log/:testid",async  function(req, res){
         console.log("addeed -- ", responses);
         console.log('body: ',  req.body);
         console.log('body: ',  req.body.logs);
+        
    
 } catch (err) {
     console.log(err);

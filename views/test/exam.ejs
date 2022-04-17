@@ -81,6 +81,7 @@
     <div class="content" style="display:none;"> 
     <div class="col-md-10" style="color: white;">
         <div>Test ends in <span id="time">  <%= questions[0].settings.testDuration %>.00 </span> seconds!</div>
+        <p id="date"> </p>
         <br>
         <% if(questions!=null) { %>
 
@@ -116,7 +117,7 @@
             <% } %>      
             
             <button class="btn btn-success mb-3" id="dem" type="submit" onclick="endTest()"> END</button>
-        
+           
         </form>
 
         <!--
@@ -125,8 +126,9 @@
             -->
     </div>
     </div>
-    <div class="col-md-4">
+    <div class="col-md-4"> 
    <video id="video"  class="float" autoplay>
+    <canvas id="canvas"> </canvas>
     <div id="output">
         <h2 style="color: white;" 
         id="text_from_script">
@@ -168,7 +170,7 @@
 
 <!-- Adds the CPU backend to the global backend registry 
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs-backend-cpu"></script>-->
-
+<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 <style>
 
     .preload { 
@@ -217,6 +219,7 @@
 <script>
     
 	const quest = <%- JSON.stringify(questions) %>;
+    let testid= quest[0]._id;
     let exam_time= quest[0].settings.testDuration;
     console.log("X",quest[0].settings.testDuration)
    // tf.env().set('WEBGL_CPU_FORWARD', false);
@@ -236,10 +239,17 @@ window.addEventListener("beforeunload", function (e) {
     return confirmationMessage;                               
   }); */
 
-  
+ 
+  //document.getElementById("date").innerHTML = this.startedAt;
   
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
+    
+
+         //snap
+        
+     
+
     const constraints={
         audio:false,
         video:true
@@ -254,7 +264,8 @@ window.addEventListener("beforeunload", function (e) {
      let   redFlags= 3;
      let   socketId= null;
      let   mediaRecorder= null;
-     let   logs= {};
+   //  let   logs= {logs:[{0:0,1:0,2:0,3:0}]};
+   let logs={};
      let   flagged= false;
      let   reason= null;
      let    startedAt= null;
@@ -263,8 +274,51 @@ window.addEventListener("beforeunload", function (e) {
      let   stream= null;
      let   userId= null;
      let    timeInterval;
-  
+  var cloudinary_photo;
+     function save(){        
+        
+       // console.log("picure",picture)
+        /*const storage = new CloudinaryStorage({
+            cloudinary,
+            params: {
+            folder:'proctor',
+            allowedFormats: ['jpg','png','jpeg'],
+            
+            }
+            });*/
+            cloud_name='dn24716of';
+            upload_preset="ml_default";
+            canvas.getContext('2d').drawImage(video, 0, 0, 150, 120); 
+        //picture=canvas.toDataURL("image/png");
+
+        canvas.toBlob((blob) => {
+        var formdata = new FormData();
+        formdata.append("file", blob);
+     formdata.append("upload_preset", upload_preset);
+      formdata.append("cloud_name", cloud_name);
+      console.log('name of cloud',cloud_name);
+        var xhr = new XMLHttpRequest();
+        xhr.open(
+          "POST",
+          "https://api.cloudinary.com/v1_1/" + cloud_name + "/image/upload",
+          false
+        );
+            console.log(" Uploaded")
+        xhr.onload = function () {
+          let response = JSON.parse(this.response);
+          //cloudinary_photo.setAttribute("src", response.secure_url);
     
+          console.log("ssss",response.secure_url);
+          imageUrl=response.secure_url;
+          //upload_response.value += this.responseText + "\n";
+          axios.post('http://localhost:3000/user/save', {
+            imageUrl, testid
+          });
+        };
+    
+        xhr.send(formdata);
+      });
+   }
     //let $ = this;
     async function init(){
 
@@ -272,21 +326,25 @@ window.addEventListener("beforeunload", function (e) {
             
             // video
             const stream= await navigator.mediaDevices.getUserMedia(constraints);
+            console.log(stream)
             handleSuccess(stream);
             navigator.permissions.query({name: 'camera'})
             .then((permissionObj) => {
              console.log(permissionObj.state);
             })
             
+            
             //face detection load
             .then(async ()=>{
-              
+                
                 //facemark
-
-                model = await faceLandmarksDetection.load(
-                faceLandmarksDetection.SupportedPackages.mediapipeFacemesh);
+                var start = window.performance.now();
+                model = await faceLandmarksDetection.load(faceLandmarksDetection.SupportedPackages.mediapipeFacemesh);
                 console.log(faceLandmarksDetection)
                 console.log("loaded 11")
+                var end = window.performance.now();
+
+                console.log(`Execution time: ${end - start} ms`);
             })
 
             // prediction
@@ -300,7 +358,9 @@ window.addEventListener("beforeunload", function (e) {
                   
                   //document.querySelector("#panel").requestFullscreen({ navigationUI: "show" });
                   //document.documentElement.requestFullscreen();
+                
                   startTest();
+                  
                  /* document.onkeypress = function(evt){console.log(evt)};
                  document.documentElement.requestFullscreen().then(()=>{
                     document.fullscreenEnabled=true;
@@ -345,6 +405,7 @@ window.addEventListener("beforeunload", function (e) {
      
    let flag=1;
     function startTest(){
+        this.startedAt = new Date();
      //   console.log("n:::",predictions.length)
         try {
             lookedAway="false";
@@ -378,7 +439,11 @@ window.addEventListener("beforeunload", function (e) {
                 } else {
                     lookedAway = false;
                 }
-                
+
+              //  save();
+                if(lookedAway="true"||predictions.length>1){
+                    save();
+                }
                 return {lookedAway,numberOfPeople:predictions.length,confidence:predictions[0].faceInViewConfidence};
             }
             let ans;
@@ -463,7 +528,7 @@ window.addEventListener("beforeunload", function (e) {
                     })
             }
           // testEnded='false';
-           
+           time=0;
             const startPrediction = async() => {
                 
                 const result = await predict();
@@ -475,6 +540,8 @@ window.addEventListener("beforeunload", function (e) {
                 
                
                 if(!logs[time])logs[time]=[0,0,0,0];
+                
+               
                 logs[time][0] =logs[time][0]+ result.lookedAway?1:0;
                // console.log("result 1:",logs[time][0],result.lookedAway)
                 logs[time][1] += result.numberOfPeople>1?1:0;
@@ -580,21 +647,29 @@ window.addEventListener("beforeunload", function (e) {
       
           
     });
-*/ 
+*/ //this.startedAt
    async function endTest() {
         
+         this.endedAt = new Date();
         this.stream.getTracks().forEach(function (track) {
           track.stop();
         });
+        startDate=this.startedAt;
+        endDate =this.endedAt;
         testEnded='false';
         clearInterval(timeInterval);
+        console.log("logs before",logs);
+       
         let data ={logs}
+        let date=startDate
+        let end= endDate
           console.log("logs",data)
+          console.log("date",date)
           $.ajax({
             type: "POST",
             url: `http://localhost:3000/test/submit-log/<%=tests%>`,
            
-            data: { logs: logs },
+            data: { logs: logs , date:date ,end:end },
             
             success: function(data) {
                 console.log("data",data)

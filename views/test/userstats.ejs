@@ -52,7 +52,6 @@
     <div class="main-content" id="panel">
     
         <div>             
-                     
              
                           
              <br>
@@ -60,17 +59,28 @@
             <div class="container w-75 mx-auto  p-0" > 
                 
                 <% if(tests!=null) { %>
-                    <table class="table">
+                    <table class="table" style="table-layout: fixed;
+                    ">
                     <tr> 
                         <div class="fixed-table-container"> 
                           
                             <thead class="thead-light" style="" >
-                                <th style="font-size:15px;font-weight: bold;color:black"> Attempt  </th>
+                                <th style="justify-content: center;font-size:15px;font-weight: bold;color:black"> Attempt  </th>
+                                <th style="font-size:15px;font-weight: bold;color:black"> START  </th>
+                                <th style="font-size:15px;font-weight: bold;color:black"> END  </th>
                                 <th style="font-size:15px;font-weight: bold;"> Minute  </th>
                                 <th style="font-size:15px;font-weight: bold;"> looked away </th>
-                                <th style="font-size:15px;font-weight: bold;">More than 1 person found</th>
+                                <th style="text-align:center;justify-content: center;font-size:15px;font-weight: bold;white-space: -o-pre-wrap; 
+                                word-wrap: break-word;
+                                white-space: pre-wrap; 
+                                white-space: -moz-pre-wrap; 
+                                white-space: -pre-wrap;">More than 1 person found</th>
                                 <th style="font-size:15px;font-weight: bold;">no person</th>
-                                <th style="font-size:15px;font-weight: bold;">Object found </th>
+                                <th style="text-align:center;font-size:15px;font-weight: bold;white-space: -o-pre-wrap; 
+                                word-wrap: break-word;
+                                white-space: pre-wrap; 
+                                white-space: -moz-pre-wrap; 
+                                white-space: -pre-wrap;">Object found </th>
                                 
                               
                             </thead>
@@ -82,8 +92,18 @@
                             <% if(tests[0].logs[j].userId = user ){  %>
                             <% for(let i=0; i < tests[0].logs[j].logs.logs.length; i++) { %> 
                               
-                    <tr class="table-primary" style="color: black;">
+                    <tr class="table-primary" style="color: black;  ">
                         <td>No. <%= j %></td>
+                        <td style="white-space: -o-pre-wrap; 
+                        word-wrap: break-word;
+                        white-space: pre-wrap; 
+                        white-space: -moz-pre-wrap; 
+                        white-space: -pre-wrap;"> <%= tests[0].logs[j].testStartedAt %></td>
+                        <td style="white-space: -o-pre-wrap; 
+                        word-wrap: break-word;
+                        white-space: pre-wrap; 
+                        white-space: -moz-pre-wrap; 
+                        white-space: -pre-wrap;"><%= tests[0].logs[j].testCompletedAt %></td>
                         <td><%=i %></td>
                         <td><%= tests[0].logs[j].logs.logs[i][0]%></td>
                       
