@@ -229,26 +229,45 @@ router.get('/logs/:testid', function (req, res, next) {
      
         console.log(req.params.testid);
        
-            userModel.find().exec(function(err, result) {
+            /*userModel.find().exec(function(err, result) {
               if (err) {
                 throw err;
               } else {
                 for (i=0; i<result.length; i++) {
                   collectionOne[i] = result[i];
-                  console.log("coll-",collectionOne[i])
+               //   console.log("coll-",collectionOne[i])
                 }
              }
             });
-            
-        Test.find({_id: req.params.testid}, function (err, allDetails) {
+            */
+            Test.findOne({_id: req.params.testid})
+            .populate('logs.userId')
+            .exec(function (err, p) {
+                if (err) return handleError(err);
+                else{
+                    console.log("p",p);
+                    console.log("p",p.logs[0].userId)
+                    res.render("test/logs", { testid:req.params.testid , tests:p })
+                }
+               
+              }
+          /*  .then(p=> {
+                
+                console.log("p",p);
+                console.log("p",p.logs[0].userId.name)
+                res.render("test/logs", { testid:req.params.testid , tests:p })
+    
+            }*/
+                );
+
+    /*    Test.find({_id: req.params.testid}, function (err, allDetails) {
             if (err) {
                 console.log(err);
             } else {
                 
-                console.log(",,",allDetails)
-                res.render("test/logs", { testid:req.params.testid , tests:allDetails,user:collectionOne })
-            }
-        }) 
+             //   console.log(",,",allDetails)
+                       }
+        })  */
 
       
         }
@@ -290,13 +309,13 @@ router.get('/stats/:testid', function (req, res, next) {
 router.get('/:testid/:userid/logs', function (req, res, next) {
     try {
         
-        Test.find({_id: req.params.testid}, function (err, allDetails) {
+        Test.findOne({_id: req.params.testid}, function (err, allDetails) {
             if (err) {
                 console.log(err);
             } else {
 
                 console.log(",,",allDetails)
-                res.render("test/logstats", { testid:req.params.testid , tests:allDetails})
+                res.render("test/logstats", { testid:req.params.testid , tests:allDetails , user:req.params.userid})
             }
         }) 
 

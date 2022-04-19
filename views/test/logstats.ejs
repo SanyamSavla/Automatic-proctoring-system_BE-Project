@@ -22,7 +22,7 @@
             <div class="container w-75 mx-auto  p-0" > 
                 
                 <% if(tests!=null) { %>
-                    <table class="table">
+                    <table class="table" id="tblData">
                     <tr> 
                         <div class="fixed-table-container"> 
                           
@@ -40,17 +40,17 @@
                         
                     </tr>
                    
-                        <% for(let j=0; j < tests[0].logs.length; j++) { %> 
-                            <% if(tests[0].logs[j].userId = user ){ if(tests[0].logs[j].logs.logs!=null) { %>
-                            <% for(let i=0; i < tests[0].logs[j].logs.logs.length; i++) { %> 
+                        <% for(let j=0; j < tests.logs.length; j++) { %> 
+                            <% if(tests.logs[j].userId = user ){ if(tests.logs[j].logs.logs!=null) { %>
+                            <% for(let i=0; i < tests.logs[j].logs.logs.length; i++) { %> 
                               
                     <tr class="table-primary" style="color: black;">
                         <td><%= i %></td>
-                        <td><%= tests[0].logs[j].logs.logs[i][0]%></td>
+                        <td><%= tests.logs[j].logs.logs[i][0]%></td>
                       
-                        <td><%= tests[0].logs[j].logs.logs[i][1] %></td>    
-                        <td><a href=""> <%= tests[0].logs[j].logs.logs[i][2]%> </a> </td>
-                        <td><%= tests[0].logs[j].logs.logs[i][3] %></td>
+                        <td><%= tests.logs[j].logs.logs[i][1] %></td>    
+                        <td><a href=""> <%= tests.logs[j].logs.logs[i][2]%> </a> </td>
+                        <td><%= tests.logs[j].logs.logs[i][3] %></td>
                         <td> </td>
                        
                     
@@ -64,6 +64,7 @@
             <% } %>
         </div>
      
+        <button onclick="exportTableToExcel('tblData')">DOWNLOAD SHEET</button>
     <!-- Header -->
     <div class="col-md-10">
     
@@ -74,3 +75,35 @@
 
 </div>
 
+<script>
+
+    function exportTableToExcel(tableID){
+        var downloadLink;
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+        
+        // Specify file name
+       
+        
+        // Create download link element
+        downloadLink = document.createElement("a");
+        
+        document.body.appendChild(downloadLink);
+        
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], {
+                type: dataType
+            });
+            navigator.msSaveOrOpenBlob( blob);
+        }else{
+            // Create a link to the file
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+        
+            
+            //triggering the function
+            downloadLink.click();
+        }
+    }
+
+</script>

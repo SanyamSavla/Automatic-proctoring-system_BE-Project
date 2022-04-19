@@ -264,7 +264,7 @@ window.addEventListener("beforeunload", function (e) {
      let   redFlags= 3;
      let   socketId= null;
      let   mediaRecorder= null;
-   //  let   logs= {logs:[{0:0,1:0,2:0,3:0}]};
+   
    let logs={};
      let   flagged= false;
      let   reason= null;
@@ -460,7 +460,7 @@ window.addEventListener("beforeunload", function (e) {
                       //console.log('Predictions: ');
                       //console.log(predictions);
                       const mobile= predictions.some(
-                                (prediction) => prediction.class === "cell phone"
+                                (prediction) => prediction.class === "cell phone" || "bottle"
                               );
                               console.log("mobile",mobile)
                               ans=mobile;
@@ -552,13 +552,13 @@ window.addEventListener("beforeunload", function (e) {
                     warning = 'Please look the screen ';
                 }
                 else warning = '';
-                if(result.mobile) warning += 'Using Mobile is not Allowed ';
+                if(result.mobile) warning += 'Using such objects is not Allowed ';
                 else warning += '';
                 if(result.numberOfPeople>1) warning += 'More than 1 people ';
                 else warning += '';
                 let name="sanyam";
                 let heading = document.getElementById('text_from_script');
-        
+                // alert(warning)
                 heading.innerText = warning;
                 warning = "Mr. " + warning;
 
@@ -658,7 +658,7 @@ window.addEventListener("beforeunload", function (e) {
         endDate =this.endedAt;
         testEnded='false';
         clearInterval(timeInterval);
-        console.log("logs before",logs);
+        //console.log("logs before",logs);
        
         let data ={logs}
         let date=startDate
@@ -733,5 +733,6 @@ window.addEventListener("beforeunload", function (e) {
         //do something else
      });
     */
+    ////  let   logs= {logs:[{0:0,1:0,2:0,3:0}]};
 </script>
 
