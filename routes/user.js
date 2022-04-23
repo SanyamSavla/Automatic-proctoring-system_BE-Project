@@ -40,7 +40,7 @@ app.use(express.static('uploads'));
 router.get('/test2/:id', isLoggedIn,async function (req, res) {
     try{
    var dataToSend;
-   var url = 'http://127.0.0.1:5000/camera/'+req.user._id.toString() ;
+   var url = 'http://auto-proctoring-system-flask.herokuapp.com/camera/'+req.user._id.toString() ;
    
    var b;
    let ans;
