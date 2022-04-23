@@ -155,7 +155,7 @@ app.use((error, request, response, next) => {
   });
 });
 
-port=(process.env.port||3000)
+port=(process.env.PORT||3000)
 app.listen(port, '0.0.0.0',function(err){
   if(err){
     console.log(err)
