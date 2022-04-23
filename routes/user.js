@@ -3,6 +3,7 @@ const express = require('express');
       passport = require('passport');
       userModel = require('../models/user');
       imgModel = require('../models/image');
+      proctModel= require('../models/proctor');
 let alert = require('alert'); 
 //var classModel = require('../models/class');
 const bcrypt = require('bcryptjs');  
@@ -394,7 +395,7 @@ router.get("/teacher-login", (req, res, next) => {
                 if (err) {
                      console.log(err);
                 }
-            });
+                });
                         //    const newimg = new imgModel({
                         //     imageUrl: req.body.imageUrl
                     //     });
@@ -420,7 +421,83 @@ router.get("/teacher-login", (req, res, next) => {
 
 
       });
-    //var webcam = nodeWebCam.create(options);
+     router.post('/save', async (req, res) => {
+       var test={
+         test:req.body.testid,
+         imageUrl: req.body.imageUrl
+       }
+      var obj = {
+        user: req.user,
+        tests:test
+        
+      }
+        try {     /*   
+         
+            */
+        proctModel.countDocuments( proctModel.findOne({user: req.user._id}), function(err, count) {
+          //if (err) { return handleError(err) } //handle possible errors
+          if(count<1){
+            proctModel.create(obj, (err, item) => {
+              if (err) {
+                   console.log(err);
+              }
+              });
+          }
+    
+            /*const count=proctModel.countDocuments( proctModel.findOne({user: req.user._id}));
+          //  console.log(count);
+            if(count<1){ 
+              proctModel.create(obj, (err, item) => {
+                if (err) {
+                     console.log(err);
+                }
+                });
+
+             }*/
+            
+             else{
+              proctModel.findOne({ user : req.user._id },function(err,item){
+                for(i=0;i<item.tests.length;i++){
+                  if(item.tests[i].test==req.body.testid){
+                    item.tests[i].imageUrl.push(req.body.imageUrl)
+                  }
+
+                }
+                
+                item.save(function(err,item)
+                {
+                  if(err) throw err;
+                  console.log('itm updated');
+                 // res.json(favorite);
+                });
+              }
+            );
+
+
+             }
+            });
+          console.log("savee??")
+          function saveimage(url,path){
+                var fullurl =url;
+                var localpath= fs.createWriteStream(path)
+
+                var request=https.get(fullurl, function (response){
+                  //  console.log(response);
+                    response.pipe(localpath);
+                })
+          }
+          saveimage(req.body.imageUrl,"./images/"+req.user.rollnumber+ (Math.floor(Math.random() * 100))+".png")
+          console.log(" SAVED")
+        //  let data = fs.readFileSync(path.join(__dirname + '../../uploads/'))
+        } catch (err) {
+          console.error('Something went wrong', err);
+        }
+
+
+      });
+    
+    
+      //var webcam = nodeWebCam.create(options);
     router.post('/u', isLoggedIn, async (req, res) => {
         req.flash("success", "Successfully Updated!");
           res.redirect('/user/profile');

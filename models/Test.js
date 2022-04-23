@@ -31,7 +31,9 @@ const testSchema = new mongoose.Schema({
 			type: mongoose.Schema.Types.ObjectId,
 			ref:'User',
 		},
-		logs:{}
+		logs:{},
+		testStartedAt:String,
+		testCompletedAt:String,
 	}],
 	responses: [{
 		userId:{

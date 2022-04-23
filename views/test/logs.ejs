@@ -12,6 +12,32 @@
                
             </div>
             
+            
+        </div>
+    </div>
+    <div class="card-body px-lg-5 py-lg-5" style="background-color:525f7f;">
+        <div class="text-center text-muted mb-4">
+          <small></small>
+          <h3 class="mb-0  " style="color: white;font-family: 'LakeShore', sans-serif">Welcome
+            <b><%=user.name%>!!!</b>
+        </h3>
+        <h5 style="color: white;">
+            Details of the exam -
+        </h5>
+        <h6 style="color: white;">
+              Test Name- <%=tests.testName%> <br>
+            Code- <%=tests.testcode%> <br>
+            Test Duration-<%=tests.settings.testDuration%> seconds
+        </h6>
+          <% if(error && error.length > 0){ %>
+            <div class="alert alert-danger" role="alert">
+              <%= error %>
+            </div>
+            <% } %> <% if(success && success.length > 0){ %>
+              <div class="alert alert-success" role="alert">
+                <%= success %>
+              </div>
+              <% } %> 
         </div>
     </div>
     <div class="main-content" id="panel">
@@ -34,31 +60,46 @@
                                 <th style="font-size:15px;font-weight: bold;">User ID </th>
                                 <th style="font-size:15px;font-weight: bold;">test ID</th>
                                 <th style="font-size:15px;font-weight: bold;">Name</th>
-                                <th style="font-size:15px;font-weight: bold;">DURATION </th>
+                                <th style="font-size:15px;font-weight: bold;">ROLL NUMBER</th>
+                                <th style="font-size:15px;font-weight: bold;">Attempted on</th>
                                 <th style="font-size:15px;font-weight: bold;">TOTAL SCORE </th>
+                                <th style="font-size:15px;font-weight: bold;">View Logs </th>
                               
                             </thead>
                               
                         
                     </tr>
                    
-                    <% for(let j=0; j < tests[0].logs.length; j++) { %> 
-                        
+                   
+                        <%tests.logs.forEach(function (logs) {%>
                     <tr class="table-primary" style="color: black;">
                        
-                        <td><%= tests[0].logs[j].userId%></td>
+                        <td> <%=logs.userId._id%> </td>
                         
-                        <td><a href="/test/<%=testid%>/<%=tests[0].logs[j].userId%>/logs"> <%= testid %> </a> </td>
+                        <td><a href="/test/<%=testid%>/<%=tests.logs[0].userId._id%>/logs"> <%= testid %> </a> </td>
                         
-                       
-                        <% } %>
+                        <td><%= logs.userId.name %></td>
+                        <td><%= logs.userId.rollnumber %></td>
+                        <% if(logs.testStartedAt == undefined){ %>
+                            <td>NA </td>
+                            <%}else{%>
+                        <td style="justify-content: center;;white-space: -o-pre-wrap; 
+                        word-wrap: break-word;
+                        white-space: pre-wrap; 
+                        white-space: -moz-pre-wrap; 
+                        white-space: -pre-wrap;"><%= logs.testStartedAt %></td>
+                        <%}%>
+                        <td><%= logs.userId.score[0].score %></td>
+                        <td><a href="/test/<%=testid%>/<%=tests.logs[0].userId._id%>/logs"> LOGS </a> </td>
+                        <% }); %>
+
                     </tr>
                  
                     
                     </div> 
                     <% }%>
                     </table>
-                   
+                    <button onclick="exportTableToExcel('tblData')">DOWNLOAD SHEET</button>
             </div>
         </div>
      
@@ -71,3 +112,37 @@
  
 
 </div>
+
+<script>
+
+    function exportTableToExcel(tableID){
+        var downloadLink;
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+        
+        // Specify file name
+       
+        
+        // Create download link element
+        downloadLink = document.createElement("a");
+        
+        document.body.appendChild(downloadLink);
+        
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], {
+                type: dataType
+            });
+            navigator.msSaveOrOpenBlob( blob);
+        }else{
+            // Create a link to the file
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+        
+            
+            //triggering the function
+            downloadLink.click();
+        }
+    }
+
+
+</script>
