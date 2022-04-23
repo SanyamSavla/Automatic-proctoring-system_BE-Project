@@ -15,16 +15,16 @@
             
         </div>
     </div>
-    <div class="card-body px-lg-5 py-lg-5" style="background-color:white;">
+    <div class="card-body px-lg-5 py-lg-5" style="background-color:525f7f;">
         <div class="text-center text-muted mb-4">
           <small></small>
-          <h3 class="mb-0  " style="color: black;font-family: 'LakeShore', sans-serif">Welcome
+          <h3 class="mb-0  " style="color: white;font-family: 'LakeShore', sans-serif">Welcome
             <b><%=user.name%>!!!</b>
         </h3>
-        <h5>
+        <h5 style="color: white;">
             Details of the exam -
         </h5>
-        <h6>
+        <h6 style="color: white;">
               Test Name- <%=tests.testName%> <br>
             Code- <%=tests.testcode%> <br>
             Test Duration-<%=tests.settings.testDuration%> seconds
@@ -99,7 +99,7 @@
                     </div> 
                     <% }%>
                     </table>
-                   
+                    <button onclick="exportTableToExcel('tblData')">DOWNLOAD SHEET</button>
             </div>
         </div>
      
@@ -112,3 +112,37 @@
  
 
 </div>
+
+<script>
+
+    function exportTableToExcel(tableID){
+        var downloadLink;
+        var dataType = 'application/vnd.ms-excel';
+        var tableSelect = document.getElementById(tableID);
+        var tableHTML = tableSelect.outerHTML.replace(/ /g, '%20');
+        
+        // Specify file name
+       
+        
+        // Create download link element
+        downloadLink = document.createElement("a");
+        
+        document.body.appendChild(downloadLink);
+        
+        if(navigator.msSaveOrOpenBlob){
+            var blob = new Blob(['\ufeff', tableHTML], {
+                type: dataType
+            });
+            navigator.msSaveOrOpenBlob( blob);
+        }else{
+            // Create a link to the file
+            downloadLink.href = 'data:' + dataType + ', ' + tableHTML;
+        
+            
+            //triggering the function
+            downloadLink.click();
+        }
+    }
+
+
+</script>

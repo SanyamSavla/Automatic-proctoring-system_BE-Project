@@ -246,7 +246,7 @@ router.get('/logs/:testid', function (req, res, next) {
                 if (err) return handleError(err);
                 else{
                     console.log("p",p);
-                    console.log("p",p.logs[0].userId)
+                    
                     res.render("test/logs", { testid:req.params.testid , tests:p })
                 }
                
