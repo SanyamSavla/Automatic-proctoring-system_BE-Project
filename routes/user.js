@@ -436,6 +436,7 @@ router.get("/teacher-login", (req, res, next) => {
             */
         proctModel.countDocuments( proctModel.findOne({user: req.user._id}), function(err, count) {
           //if (err) { return handleError(err) } //handle possible errors
+          console.log(count);
           if(count<1){
             proctModel.create(obj, (err, item) => {
               if (err) {
@@ -456,10 +457,16 @@ router.get("/teacher-login", (req, res, next) => {
              }*/
             
              else{
+
               proctModel.findOne({ user : req.user._id },function(err,item){
                 for(i=0;i<item.tests.length;i++){
+
                   if(item.tests[i].test==req.body.testid){
                     item.tests[i].imageUrl.push(req.body.imageUrl)
+                  }
+                  else if((i==item.tests.length-1) && (item.tests[i].test!=req.body.testid)){
+
+                    item.tests.push(test)
                   }
 
                 }

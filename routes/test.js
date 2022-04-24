@@ -3,6 +3,7 @@ const router = express.Router();
       passport = require('passport');
 const userModel = require('../models/user');
 const Test = require('../models/Test');
+      proctModel= require('../models/proctor');
 
 //var classModel = require('../models/class');
 //var recordModel = require('../models/record');
@@ -349,6 +350,33 @@ router.get('/results', function (req, res, next) {
             errorMsg: errorMsg,
             successMsg: successMsg,
             tests: allDetails,message: message,
+            hasError: message.length > 0,
+        })   
+        }
+    }) 
+            
+          
+});
+
+router.get('/:testid/images', function (req, res, next) {
+    errorMsg = ""
+    successMsg = ""
+    var message = req.flash("error");
+    if (req.session.errorMsg || req.session.successMsg) {
+        errorMsg = req.session.errorMsg
+        successMsg = req.session.successMsg
+        req.session.errorMsg = undefined
+        req.session.successMsg = undefined
+    }
+    proctModel.findOne({user: req.user._id}, function (err, allDetails) {
+        if (err) {
+            console.log(err);
+        } else {res.render('test/image', {
+            user: req.user,
+            testid:req.params.testid,
+            errorMsg: errorMsg,
+            successMsg: successMsg,
+            proctor: allDetails,message: message,
             hasError: message.length > 0,
         })   
         }

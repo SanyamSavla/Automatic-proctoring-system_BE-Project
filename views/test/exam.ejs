@@ -667,8 +667,8 @@ window.addEventListener("beforeunload", function (e) {
           console.log("date",date)
           $.ajax({
             type: "POST",
-            url: `https://prs-portal.herokuapp.com//test/submit-log/<%=tests%>`,
-           
+            /*url: `https://prs-portal.herokuapp.com//test/submit-log/<%=tests%>`,*/
+            url: 'http://localhost:3000/test/submit-log/<%=tests%>',
             data: { logs: logs , date:date ,end:end },
             
             success: function(data) {
