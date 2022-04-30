@@ -119,14 +119,17 @@
             <button class="btn btn-success mb-3" id="dem" type="submit" onclick="endTest()"> END</button>
            
         </form>
-
+        
         <!--
         <button class="btn btn-success mb-3" >Submit</button>
             <button  id="demo" >End </button>
             -->
     </div>
     </div>
+  
+
     <div class="col-md-4"> 
+
    <video id="video"  class="float" autoplay>
     <canvas id="canvas"> </canvas>
     <div id="output">
@@ -134,7 +137,7 @@
         id="text_from_script">
     </h2>
 
-   
+    
 
      </div>
    </video>
@@ -162,8 +165,8 @@
 <!-- ---------------- -->
 
 <!-- Load TensorFlow.js. This is required to use coco-ssd model. -->
-<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script>
-
+<!-- <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs"> </script> -->
+<script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs/dist/tf.min.js"> </script>
 <!-- Load the coco-ssd model. -->
 <script src="https://cdn.jsdelivr.net/npm/@tensorflow-models/coco-ssd"> </script>
 
@@ -217,31 +220,17 @@
 
 
 <script>
-    
+    const user = <%- JSON.stringify(user) %>;
+    console.log(user)
 	const quest = <%- JSON.stringify(questions) %>;
     let testid= quest[0]._id;
     let exam_time= quest[0].settings.testDuration;
     console.log("X",quest[0].settings.testDuration)
-   // tf.env().set('WEBGL_CPU_FORWARD', false);
-    // -- video 
-    //tf.env().set('WEBGPU_CPU_FORWARD', false);
-   // tf.env().set('WEBGL_CPU_FORWARD', false);
    $(function() {
     $(".preload").fadeOut(10000, function() {
         $(".content").fadeIn(12000);        
     });
 });
-/*
-window.addEventListener("beforeunload", function (e) {
-    var confirmationMessage = "\o/";
-  
-    (e || window.event).returnValue = confirmationMessage;     // Gecko + IE
-    return confirmationMessage;                               
-  }); */
-
- 
-  //document.getElementById("date").innerHTML = this.startedAt;
-  
     const video = document.getElementById('video');
     const canvas = document.getElementById('canvas');
     
@@ -275,28 +264,33 @@ window.addEventListener("beforeunload", function (e) {
      let   userId= null;
      let    timeInterval;
   var cloudinary_photo;
-     function save(){        
-        
-       // console.log("picure",picture)
-        /*const storage = new CloudinaryStorage({
-            cloudinary,
-            params: {
-            folder:'proctor',
-            allowedFormats: ['jpg','png','jpeg'],
-            
-            }
-            });*/
-            cloud_name='dn24716of';
+
+  
+     async function save(){        
+   
+    canvas.getContext('2d').drawImage(video, 0, 0, 200,150);      
+    let imageUrl= canvas.toDataURL();
+    
+    //base64String =imageUrl.replace("data:", "").replace(/^.+,/, "");
+    //imageUrl = base64String;
+    console.log("Uploaded ")
+    res = await axios.post('http://localhost:3000/user/save', {
+        imageUrl, testid
+      });
+    
+   
+    /*
+             cloud_name='dn24716of';
             upload_preset="ml_default";
-            canvas.getContext('2d').drawImage(video, 0, 0, 150, 120); 
+            canvas.getContext('2d').drawImage(video, 0, 0, canvas.width, canvas.height); 
         //picture=canvas.toDataURL("image/png");
 
         canvas.toBlob((blob) => {
         var formdata = new FormData();
         formdata.append("file", blob);
-     formdata.append("upload_preset", upload_preset);
-      formdata.append("cloud_name", cloud_name);
-      console.log('name of cloud',cloud_name);
+        formdata.append("upload_preset", upload_preset);
+        formdata.append("cloud_name", cloud_name);
+        console.log('name of cloud',cloud_name);
         var xhr = new XMLHttpRequest();
         xhr.open(
           "POST",
@@ -318,7 +312,37 @@ window.addEventListener("beforeunload", function (e) {
     
         xhr.send(formdata);
       });
+      */
    }
+
+   
+   async function face() {
+    
+    console.log(canvas.width)
+    console.log("h",canvas.height)
+    //const img = document.getElementById('video');
+    canvas.getContext('2d').drawImage(video, 0, 0, 200,150);      
+    let data= canvas.toDataURL();
+    
+    base64String =data.replace("data:", "").replace(/^.+,/, "");
+    data = base64String;
+
+    // alert(imageBase64Stringsep);
+    //     console.log(base64String);
+    //console.log(data);
+   
+    res = await axios.post('http://127.0.0.1:5000/camera/<%=user._id%>/', {
+        data
+    });
+    score = res.data;
+    console.log("score",score);
+    if(score.verified>1){
+        alert(" sit properly")
+    }
+    else{
+    }
+  return score
+};
     //let $ = this;
     async function init(){
 
@@ -326,13 +350,14 @@ window.addEventListener("beforeunload", function (e) {
             
             // video
             const stream= await navigator.mediaDevices.getUserMedia(constraints);
-            console.log(stream)
             handleSuccess(stream);
             navigator.permissions.query({name: 'camera'})
+           
             .then((permissionObj) => {
              console.log(permissionObj.state);
             })
             
+           
             
             //face detection load
             .then(async ()=>{
@@ -340,7 +365,7 @@ window.addEventListener("beforeunload", function (e) {
                 //facemark
                 var start = window.performance.now();
                 model = await faceLandmarksDetection.load(faceLandmarksDetection.SupportedPackages.mediapipeFacemesh);
-                console.log(faceLandmarksDetection)
+              
                 console.log("loaded 11")
                 var end = window.performance.now();
 
@@ -349,29 +374,9 @@ window.addEventListener("beforeunload", function (e) {
 
             // prediction
             .then(async ()=>{
-                
-             /* const predictions = await model.estimateFaces({
-                    input: document.querySelector("video")
-                    });
-                  console.log("predictin",predictions)*/
-                  //let $ = this;
-                  
-                  //document.querySelector("#panel").requestFullscreen({ navigationUI: "show" });
-                  //document.documentElement.requestFullscreen();
-                
+                  //  save();
                   startTest();
-                  
-                 /* document.onkeypress = function(evt){console.log(evt)};
-                 document.documentElement.requestFullscreen().then(()=>{
-                    document.fullscreenEnabled=true;
-                      startTest(predictions);
-                     // console.log('isteststarted',this.isTestStarted);
-                     // this.startedAt = new Date();
-                  }).catch(err => {
-                      alert(`Error attempting to enable full-screen mode: ${err.message} (${err.name})`);
-                  });*/
-               // startTest(predictions);
-            })
+             })
            
             .catch((error) => {
              console.log('Got error :', error);
@@ -405,18 +410,20 @@ window.addEventListener("beforeunload", function (e) {
      
    let flag=1;
     function startTest(){
+
+      
         this.startedAt = new Date();
      //   console.log("n:::",predictions.length)
         try {
             lookedAway="false";
+            
           //  console.log("pehle",lookedAway)
             const facePredict = async () => {
                 const predictions = await model.estimateFaces({
                     input: document.querySelector("video")
                     });
-
-              //  console.log("no of people:",predictions.length)
-              // console.log("predictin......",predictions)
+                    
+            
                 if(!predictions.length) return {lookedAway:true,numberOfPeople:predictions.length,confidence:0};
                //console.log("lookedAway",lookedAway);
                 const leftCheek = predictions[0].annotations.leftCheek[0];
@@ -425,7 +432,7 @@ window.addEventListener("beforeunload", function (e) {
                 const noseTip = predictions[0].annotations.noseTip[0];
                 const leftIrisError = this.calculateError(predictions[0].annotations.leftEyeIris);
                 const rightIrisError = this.calculateError(predictions[0].annotations.rightEyeIris);
-             //  console.log("error", leftIrisError, rightIrisError);
+                //console.log("error", leftIrisError, rightIrisError);
                 let lookedAway = false;
                 if(leftIrisError+rightIrisError>0.15) {
                     lookedAway = true;
@@ -441,8 +448,23 @@ window.addEventListener("beforeunload", function (e) {
                 }
 
               //  save();
-                if(lookedAway="true"||predictions.length>1){
-                    save();
+              console.log("looking away?????",lookedAway)
+               if(lookedAway=="true"|| predictions[0].faceInViewConfidence<0.8){
+                   console.log("looking away true")
+                canvas.getContext('2d').drawImage(video, 0, 0, 200,150);      
+                let imageUrl= canvas.toDataURL();
+                
+                //base64String =imageUrl.replace("data:", "").replace(/^.+,/, "");
+                //imageUrl = base64String;
+                console.log("Uploaded ")
+                axios.post('http://localhost:3000/user/save', {
+                    imageUrl, testid
+                });
+
+               }
+               else{
+
+                console.log("looking away FALSE")
                 }
                 return {lookedAway,numberOfPeople:predictions.length,confidence:predictions[0].faceInViewConfidence};
             }
@@ -451,6 +473,9 @@ window.addEventListener("beforeunload", function (e) {
             let anst;
             let mob;
 
+         
+         
+            
             const mobilePredict = async () => {
                 const img = document.getElementById('video');
               await  cocoSsd.load().then(model => {
@@ -458,9 +483,9 @@ window.addEventListener("beforeunload", function (e) {
                     model.detect(img).then(predictions => {
                       //console.log(img)
                       //console.log('Predictions: ');
-                      //console.log(predictions);
+                      //console.log("mobile prediction",predictions);
                       const mobile= predictions.some(
-                                (prediction) => prediction.class === "cell phone" || "bottle"
+                                (prediction) => prediction.class === "cell phone" 
                               );
                               console.log("mobile",mobile)
                               ans=mobile;
@@ -473,43 +498,13 @@ window.addEventListener("beforeunload", function (e) {
                     console.log(ans)
                     
                   });
-                    ///.then (mod => {
-                       // count=0;
-                     /*   mod[0].detect(img).then(predictions => {
-                           
-                            console.log("aaa",predictions);
-                            console.log("aaa",predictions.some(
-                                (prediction) => prediction.class === "cell phone"
-                              ));
-                             const mobile= predictions.some(
-                                (prediction) => prediction.class === "cell phone"
-                              );
-                              console.log("mobile",mobile)
-                              
-                              if(mobile){
-                                  count=1;
-                                  mob="true";
-                              }
-                              else{
-                                  count=0;
-                                  mob="false";
-                              }                    
-                            console.log("count first",count)
-                            
-                            console.log("anst",mob)
-                            return {
-                                mob,
-                                count,
-                                anst:mobile,
-                                mobile:mobile
-                              };
-                    }) 
-              })*/
+                    
               return {
                                 
                 mobile:ans
               };
             };
+
 
            
 
@@ -521,28 +516,24 @@ window.addEventListener("beforeunload", function (e) {
 
                         return {
                             ...result[0],
-                            ...result[1]
-                           
+                            ...result[1],
                             
                         }
                     })
             }
           // testEnded='false';
-           time=0;
+          time=0;
             const startPrediction = async() => {
                 
                 const result = await predict();
                 
-              //  console.log("Result",result)
-                //console.log("logs",logs)
+                
                 
                 console.log("this.time",time)
-                
-               
                 if(!logs[time])logs[time]=[0,0,0,0];
                 
                
-                logs[time][0] =logs[time][0]+ result.lookedAway?1:0;
+                logs[time][0] += result.lookedAway?1:0;
                // console.log("result 1:",logs[time][0],result.lookedAway)
                 logs[time][1] += result.numberOfPeople>1?1:0;
                 //console.log("result 2:",logs[time][1],result.numberOfPeople)
@@ -563,6 +554,8 @@ window.addEventListener("beforeunload", function (e) {
                 warning = "Mr. " + warning;
 
                 console.log("logs---",logs)
+               
+                
                 // if(result.lookedAway ||  result.numberOfPeople>1 ||  result.confidence<0.8 || result.mobile){
                 //     $.continuousFlags += 1;
                 // } else {
@@ -574,80 +567,21 @@ window.addEventListener("beforeunload", function (e) {
                 //     $.beep.stop();
                 // }
                 if(!testEnded)requestAnimationFrame(startPrediction);
-            };   
+            };
+            
            timeInterval = setInterval(() => {
+            setTimeout(startPrediction, 4000);
             startPrediction();
+            tf.disposeVariables()
             time += 1;
-          }, 20*1000);
+          }, 25*1000);
           //requestAnimationFrame(startPrediction);
         }
         catch(err){ console.log("error hai!!",err); } 
+
+        
     }
 
-   /* $("#demo").on("click", function() {
-        
-        let data ={logs:logs}
-        console.log("logs",data)
-        var xhr = new XMLHttpRequest();
-        
-        xhr.open('POST', '/test/submit-exam/${urlencode(tests)}');
-        xhr.onload = function(data) {
-            console.log('loaded', this.responseText);
-        };
-        xhr.setRequestHeader('Content-Type', 'application/json');
-        xhr.send(JSON.stringify(data));
-        
-        this.stream.getTracks().forEach(function (track) {
-            track.stop();
-          });
-          testEnded='false';
-          
-        clearInterval(timeInterval);
-
-    });
-
-    $('#demo').on('submit', function() {
-        console.log(logs)
-        this.stream.getTracks().forEach(function (track) {
-            track.stop();
-          });
-          testEnded='false';
-          
-        clearInterval(timeInterval);
-        $.ajax({
-            type: "POST",
-            url: "/test/submit-exam/${urlencode(tests)}",
-            dataType: 'json',
-            data: { logs: logs },
-            
-            success: function(data) {
-                console.log("data",data)
-            },
-            error: function(jqXHR, textStatus, err) {
-                alert('text status '+textStatus+', err '+err)
-            }
-        });
-        
-        });
-  /*  const button = document.getElementById('demo');
-    button.addEventListener('submit', async event => {
-    let data ={logs};
-    console.log("data ",data)
-     let options = {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json; "
-            },
-            body: JSON.stringify(data)
-        }
-        event.preventDefault();
-        const promise = await fetch('/test/submit-exam/${urlencode(tests)}', options);
-        const json =  promise.json();
-        console.log(json);
-      
-          
-    });
-*/ //this.startedAt
    async function endTest() {
         
          this.endedAt = new Date();
@@ -678,35 +612,7 @@ window.addEventListener("beforeunload", function (e) {
                 alert('text status '+textStatus+', err '+err)
             }   
         });
-        /*
-        let data ={logs}
-          console.log("logs",data)
-        let options = {
-            method: 'POST',
-            headers: {
-                "Content-type": "application/json; "
-            },
-            body: JSON.stringify(data)
-        }
-        const promise = await  fetch('/test/submit-exam/:testid', options);
-        const json = await promise.json();
-         console.log(json);*/
-         /* $(document).ready(function () {
-            $("#demo").click(function () {
-                $.post("http://localhost:3000/test/submit-exam/${tests}",
-                {
-                   logs:logs
-                },
-                function (data, status) {
-                   console.log(data);
-             });
-            });
-         });
-            
-      
-       
-        console.log("time interval stop",this.timeInterval)
-       */
+        
       }
     var x= 1;
       var timeleft = Number(exam_time)+Number(x);

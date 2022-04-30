@@ -39,6 +39,7 @@ const url="CLOUDINARY_URL=cloudinary://838184683621473:BQkNqSaTW59pwF8lDfGlaFIyP
 
 const faceLandmarksDetection = require('@tensorflow-models/face-landmarks-detection');
 
+app.use(cors());
 
 mongoose.Promise = global.Promise;
 const databaseUri =process.env.MONGODB_URI ;

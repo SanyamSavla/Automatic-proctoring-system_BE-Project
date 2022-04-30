@@ -29,6 +29,7 @@ const nodeWebCam = require('node-webcam');
 const {spawn} = require('child_process');
 const request = require('request');
 
+
 cloudinary.config({
     cloud_name: 'dn24716of',
     api_key: '838184683621473',
@@ -63,6 +64,35 @@ router.get('/test2/:id', isLoggedIn,async function (req, res) {
      } catch (err) {
       console.log(err)
   }
+
+});
+
+router.get('/check/:id', isLoggedIn,async function (req, res) {
+  try{
+ var dataToSend;
+ var url = 'http://localhost:5000/camera/'+req.user._id.toString() ;
+ let x=req.body;
+
+ var b;
+ await request(url, async function (error, response, body) {
+    console.log('body:', body);
+    ans=body;  
+    console.log('error:', error);
+
+    if(body=="Unknown"){
+      alert("Not known!")
+    }
+    else{
+      alert(body, "found")
+    }
+
+
+    });
+    await res.render('user/camera');
+    return;
+   } catch (err) {
+    console.log(err)
+}
 
 });
 
@@ -389,9 +419,11 @@ router.get("/teacher-login", (req, res, next) => {
             user: req.user,
             imageUrl: req.body.imageUrl
           }
+          console.log("Object---",req.body.imageUrl)
         try {
            
-             imgModel.create(obj, (err, item) => {
+          await  imgModel.create(obj, (err, item) => {
+               console.log("Object---",obj)
                 if (err) {
                      console.log(err);
                 }
@@ -493,7 +525,7 @@ router.get("/teacher-login", (req, res, next) => {
                     response.pipe(localpath);
                 })
           }
-          saveimage(req.body.imageUrl,"./images/"+req.user.rollnumber+ (Math.floor(Math.random() * 100))+".png")
+        //  saveimage(req.body.imageUrl,"./images/"+req.user.rollnumber+ (Math.floor(Math.random() * 100))+".png")
           console.log(" SAVED")
         //  let data = fs.readFileSync(path.join(__dirname + '../../uploads/'))
         } catch (err) {

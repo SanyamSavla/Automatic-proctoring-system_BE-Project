@@ -9,38 +9,92 @@ from flask import Flask, request, render_template
 from pymongo import MongoClient 
 from mongo import store_db
 import sys
-import time
+import base64
 from bson.objectid import ObjectId
-# app = Flask(__name__)
 
-capture_duration = 10
-#webcam #0
-video_capture = cv2.VideoCapture(0)
+def toImage(string): 
+    decodeit = open('unknown.jpg', 'wb')
+    decodeit.write(base64.b64decode((string)))
+    decodeit.close()    
+    print("unknown.jpg created\n")
+    return
 
-# Loading sample picture and encoding it. subject 1
-#parshva_image = face_recognition.load_image_file("Parshva.jpg")
-#parshva_face_encoding = face_recognition.face_encodings(parshva_image)[0]
+def toDelete():
+    if os.path.exists("unknown.jpg"):
+        os.remove("unknown.jpg")
+        print("unknown.jpg deleted")
+    else:
+        print("unknown.jpg does not exist")
+    return
+        
+def toString(image):    
+    with open(image, "rb") as image2string:
+        converted_string = base64.b64encode(image2string.read())
+    print("string converted")
+    return converted_string
 
-# Loading sample picture and encoding it. subject 2
-#raj_image = face_recognition.load_image_file("Raj.jpg")
-#raj_face_encoding = face_recognition.face_encodings(raj_image)[0]
 
-# Loading sample picture and encoding it. subject 3
-#sanyam_image = face_recognition.load_image_file("Sanyam.jpg")
-#sanyam_face_encoding = face_recognition.face_encodings(sanyam_image)[0]
+def faceRec(userID,userImgStr):
+    # Creating arrays of known face encodings and their names
+    #known_face_encodings = [sanyam_face_encoding]
+    #known_face_names = ["Sanyam"]
+    #app.config['MONGO_URI'] = 'mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test'
 
-# Creating arrays of known face encodings and their names
-#known_face_encodings = [sanyam_face_encoding]
-#known_face_names = ["Sanyam"]
-#app.config['MONGO_URI'] = 'mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test'
+    #client = pymongo.MongoClient("mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test") 
+    # Database Name
+    #db = client["test"]
 
-#client = pymongo.MongoClient("mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test") 
-# Database Name
-#db = client["test"]
+    #x=db['images'].find({},{'user':1,'imageUrl':1})
 
-#x=db['images'].find({},{'user':1,'imageUrl':1})
+    #y=db['users'].find()
+    conn = MongoClient("mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test") 
+    db = conn.test.users 
+    #result=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "rollnumber": 1})
+    #print(result)
 
-#y=db['users'].find()
+    r=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "rollnumber": 1}).distinct("rollnumber")
+    #print(r[0])
+    name=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "name": 1}).distinct("name")
+    #print(name[0])
+
+    sname=name[0]
+    known_face_encodings = []
+    known_face_roll_no = []
+    df = pd.read_excel("students" + os.sep + "students.xls")
+    known_face_names=[]
+
+    #for key, row in df.iterrows():
+        #rollnumber = row["rollnumber"]
+        #name = row["name"]
+        #image_path = row["image"]
+        #classid=row["classid"]
+        #roll_record[rollnumber] = name
+        #continue         
+    try:
+        student_image = face_recognition.load_image_file("./uploads" + os.sep + r[0])
+        student_face_encoding = face_recognition.face_encodings(student_image)[0]
+        known_face_encodings.append(student_face_encoding)
+        known_face_names.append(name[0])
+    except Exception as e:
+        print(e)
+        #print("../uploads" + os.sep +rollnumber+" Student has not uploaded an image")       
+
+    #converting string to jpg image and storing it
+    toImage(userImgStr)
+
+    #loading live image from test and creating encodings
+    unknown_picture = face_recognition.load_image_file("unknown.jpg")
+    unknown_face_encoding = face_recognition.face_encodings(unknown_picture)[0]
+
+    #comparing encodings for both
+    results = face_recognition.compare_faces(known_face_encodings, unknown_face_encoding)
+
+    #deleting live image from test after analysis
+    toDelete()
+    return userID,results[0]
+
+
+
 conn = MongoClient("mongodb+srv://kjsce:kjsce@cluster0.oevtx.mongodb.net/test") 
 db = conn.test.users 
 #result=db.find({"_id": ObjectId(sys.argv[1])}, {"_id":0, "rollnumber": 1})
@@ -127,5 +181,6 @@ while True:
 video_capture.release()
 
 cv2.destroyAllWindows()
+
 
 
