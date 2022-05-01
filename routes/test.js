@@ -201,12 +201,14 @@ router.post("/submit-log/:testid",async  function(req, res){
         const data = req.body.logs;
         const date=req.body.date;
         const end= req.body.end;
+        const flag=req.body.uf;
         const responses = [];
         responses.push({
             userId:req.user,
             logs:data,
             testStartedAt:date,
-            testCompletedAt:end
+            testCompletedAt:end,
+            flag:flag,
            });
         const question = await Test.updateOne({_id:req.params.testid},{$push:{"logs" : responses}})
         console.log("find ", question);
@@ -342,7 +344,10 @@ router.get('/results', function (req, res, next) {
         req.session.errorMsg = undefined
         req.session.successMsg = undefined
     }
-    Test.find({}, function (err, allDetails) {
+
+    userModel.findOne({_id: req.user._id})
+    .populate('score.test')
+    .exec(function (err, allDetails){
         if (err) {
             console.log(err);
         } else {res.render('test/exam-results', {
@@ -353,7 +358,19 @@ router.get('/results', function (req, res, next) {
             hasError: message.length > 0,
         })   
         }
-    }) 
+    });
+    /* Test.find({}, function (err, allDetails) {
+        if (err) {
+            console.log(err);
+        } else {res.render('test/exam-results', {
+            user: req.user,
+            errorMsg: errorMsg,
+            successMsg: successMsg,
+            tests: allDetails,message: message,
+            hasError: message.length > 0,
+        })   
+        }
+    }) */ 
             
           
 });

@@ -136,7 +136,7 @@ def faceRec(arg1,arg2):
 
     print("I found {} face(s) in this photograph.".format(len(face_locations)))
  
-    print(len(face_recognition.face_encodings(unknown_picture)))
+    # print(len(face_recognition.face_encodings(unknown_picture)))
 
     # # KNOWN 
     # face = face_recognition.face_locations(student_image)
@@ -156,7 +156,7 @@ def faceRec(arg1,arg2):
 
    #comparing encodings for both
      
-    print(results[0])
+    # print(results[0])
     #deleting live image from test after analysis
     toDelete()
     if(results[0]=='True'):

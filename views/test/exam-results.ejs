@@ -66,7 +66,8 @@
                           
                             <thead class="thead-light" style="" >
                                 <th style="font-size:15px;font-weight: bold;">Sr. No </th>
-                                <th style="font-size:15px;font-weight: bold;">ID </th>
+                                <th style="font-size:15px;font-weight: bold;">Test ID </th>
+                                <th style="font-size:15px;font-weight: bold;">Test Name </th>
                                 
                                 <th style="font-size:15px;font-weight: bold;">SCORE</th>
                                 <th style="font-size:15px;font-weight: bold;">LOGS </th>
@@ -76,14 +77,14 @@
                               
                         
                     </tr>
-                   
+                    
                         <% for(let i=0; i < user.score.length; i++) { %> 
                     <tr class="table-primary" style="color: black;">
                         <td><%= i+1%></td>
                         <td><%= user.score[i].test%></td>    
+                        <td> <%=tests.score[i].test.testName  %> </td>
 
-
-                        <td> <%= user.score[i].score%>/<%=tests[1].settings.totalScore  %> </td>
+                        <td> <%= user.score[i].score%>/<%=tests.score[i].test.settings.totalScore  %> </td>
                         <td> <a href="/test/stats/<%=user.score[i].test%>/"> Logs </a></td>
                         <td> <a href="/test/<%=user.score[i].test%>/images"> Images  </a></td>
                       

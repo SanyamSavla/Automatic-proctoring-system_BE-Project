@@ -253,7 +253,7 @@
      let   redFlags= 3;
      let   socketId= null;
      let   mediaRecorder= null;
-   
+    let userflag=0;
    let logs={};
      let   flagged= false;
      let   reason= null;
@@ -318,8 +318,9 @@
    
    async function face() {
     
-    console.log(canvas.width)
-    console.log("h",canvas.height)
+    
+    //console.log(canvas.width)
+    //console.log("h",canvas.height)
     //const img = document.getElementById('video');
     canvas.getContext('2d').drawImage(video, 0, 0, 200,150);      
     let data= canvas.toDataURL();
@@ -336,12 +337,23 @@
     });
     score = res.data;
     console.log("score",score);
+   
+    
     if(score.verified>1){
         alert(" sit properly")
     }
+    else if(score.verified==0){
+        userflag+=1;
+    console.log("User verificaion",userflag)
+    alert(" Some other person")
+    }
     else{
+
     }
   return score
+ 
+
+
 };
     //let $ = this;
     async function init(){
@@ -375,6 +387,11 @@
             // prediction
             .then(async ()=>{
                   //  save();
+                  //var start = window.performance.now();
+                  //face();
+                  
+                  //var end = window.performance.now();
+                  //console.log(`Time for user verifi: ${end - start} ms`);
                   startTest();
              })
            
@@ -449,7 +466,7 @@
 
               //  save();
               console.log("looking away?????",lookedAway)
-               if(lookedAway=="true"|| predictions[0].faceInViewConfidence<0.8){
+               if(lookedAway=="true"|| predictions[0].faceInViewConfidence<0.8|| predictions.length>1){
                    console.log("looking away true")
                 canvas.getContext('2d').drawImage(video, 0, 0, 200,150);      
                 let imageUrl= canvas.toDataURL();
@@ -485,17 +502,35 @@
                       //console.log('Predictions: ');
                       //console.log("mobile prediction",predictions);
                       const mobile= predictions.some(
-                                (prediction) => prediction.class === "cell phone" 
+                                (prediction) => ((prediction.class === "cell phone") ||(prediction.class === "laptop")||(prediction.class === "bottle")) 
                               );
-                              console.log("mobile",mobile)
+                              //console.log("mobile",mobile)
                               ans=mobile;
+                              if(mobile=="true"){
+                                //console.log("looking away true")
+                                canvas.getContext('2d').drawImage(video, 0, 0, 200,150);      
+                                let imageUrl= canvas.toDataURL();
+                                
+                                //base64String =imageUrl.replace("data:", "").replace(/^.+,/, "");
+                                //imageUrl = base64String;
+                                console.log("Uploaded ")
+                                axios.post('http://localhost:3000/user/save', {
+                                    imageUrl, testid
+                                });
+                
+                            }
+                            else{
+             
+                             console.log("looking away FALSE")
+                             }
+                           
                               return {
                                 
                                 ans:mobile
                               };
                               
                     });
-                    console.log(ans)
+                    //console.log(ans)
                     
                   });
                     
@@ -525,20 +560,26 @@
           time=0;
             const startPrediction = async() => {
                 
+                //const res= await setTimeout(face, 5000);
+
                 const result = await predict();
                 
-                
-                
-                console.log("this.time",time)
+
+               // console.log("this.time",time)
                 if(!logs[time])logs[time]=[0,0,0,0];
                 
-               
+                
                 logs[time][0] += result.lookedAway?1:0;
                // console.log("result 1:",logs[time][0],result.lookedAway)
                 logs[time][1] += result.numberOfPeople>1?1:0;
                 //console.log("result 2:",logs[time][1],result.numberOfPeople)
                 logs[time][2] += result.confidence<0.8?1:0;
                 logs[time][3] += result.mobile?1:0
+               /*logs[time][4] += res?0:1
+                if(!res){
+                    warning=" Some other person"
+                }
+                else warning =''; */
                 if(result.lookedAway||result.confidence<0.8) {
                     warning = 'Please look the screen ';
                 }
@@ -570,8 +611,9 @@
             };
             
            timeInterval = setInterval(() => {
-            setTimeout(startPrediction, 4000);
+            //setTimeout(startPrediction, 4000);
             startPrediction();
+            face();
             tf.disposeVariables()
             time += 1;
           }, 25*1000);
@@ -595,6 +637,7 @@
         //console.log("logs before",logs);
        
         let data ={logs}
+        let uf=userflag
         let date=startDate
         let end= endDate
           console.log("logs",data)
@@ -603,7 +646,7 @@
             type: "POST",
             /*url: `https://prs-portal.herokuapp.com//test/submit-log/<%=tests%>`,*/
             url: 'http://localhost:3000/test/submit-log/<%=tests%>',
-            data: { logs: logs , date:date ,end:end },
+            data: { logs: logs , date:date ,end:end, flag:uf },
             
             success: function(data) {
                 console.log("data",data)

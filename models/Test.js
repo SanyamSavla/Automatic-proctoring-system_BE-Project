@@ -32,6 +32,7 @@ const testSchema = new mongoose.Schema({
 			ref:'User',
 		},
 		logs:{},
+		flag:Number,
 		testStartedAt:String,
 		testCompletedAt:String,
 	}],
