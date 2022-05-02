@@ -244,7 +244,7 @@ router.get('/logs/:testid', function (req, res, next) {
             });
             */
             Test.findOne({_id: req.params.testid})
-            .populate('logs.userId')
+            .populate('logs.userId responses.userId')
             .exec(function (err, p) {
                 if (err) return handleError(err);
                 else{

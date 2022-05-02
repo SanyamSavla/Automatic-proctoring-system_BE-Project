@@ -27,7 +27,12 @@
         <h6 style="color: white;">
               Test Name- <%=tests.testName%> <br>
             Code- <%=tests.testcode%> <br>
-            Test Duration-<%=tests.settings.testDuration%> seconds
+            Test Duration-<%=tests.settings.testDuration%> seconds <br>
+            Correct options-> [
+            <%tests.questions.forEach(function (t) {%>
+                '<%= t.correctOptions %> ',
+                <%});%>
+                ]
         </h6>
           <% if(error && error.length > 0){ %>
             <div class="alert alert-danger" role="alert">
@@ -51,7 +56,7 @@
             <div class="container w-75 mx-auto  p-0" > 
                 
                 <% if(tests!=null) { %>
-                    <table class="table">
+                    <table class="table" id="tblData">
                     <tr> 
                         <div class="fixed-table-container"> 
                           
@@ -98,9 +103,64 @@
                     
                     </div> 
                     <% }%>
+                    
+                    </table>
+                    
+                <% if(tests!=null) { %>
+                    <table class="table" id="score">
+                    <tr> 
+                        <div class="fixed-table-container"> 
+                          
+                            <thead class="thead-light" style="" >
+        
+                                <th style="font-size:15px;font-weight: bold;">User ID </th>
+                                <th style="font-size:15px;font-weight: bold;">test ID</th>
+                                <th style="font-size:15px;font-weight: bold;">Name</th>
+                                <th style="font-size:15px;font-weight: bold;">SCORE</th>
+                                <th style="font-size:15px;font-weight: bold;">ANswers</th>
+                              
+                            </thead>
+                              
+                        
+                    </tr>
+                   
+                   
+                        <%tests.responses.forEach(function (logs) {%>
+                    <tr class="table-primary" style="color: black;">
+                       
+                        <td> <%=logs.userId._id%> </td>
+                        
+                        <td><a href="/test/<%=testid%>/<%=tests.logs[0].userId._id%>/logs"> <%= testid %> </a> </td>
+                        
+                        <td><%= logs.userId.name %></td>
+                       
+                        <td><%= logs.score %></td>
+                        <td> 
+                            [
+                            
+                        <% logs.answers.forEach(function (ans) { %>
+                            
+                           <% if(ans==null) {%>  
+                           ,
+                            <%}else{%>
+                            <%= ans %>, 
+                        <%}});%>
+                        ]
+                    </td>
+                    
+                        <% }); %>
+
+                    </tr>
+                 
+                    
+                    </div> 
+                    <% }%>
+                    
                     </table>
                     <button onclick="exportTableToExcel('tblData')">DOWNLOAD SHEET</button>
-            </div>
+                    <button onclick="exportTableToExcel('score')">DOWNLOAD SHEET</button>
+  
+                </div>
         </div>
      
     <!-- Header -->
