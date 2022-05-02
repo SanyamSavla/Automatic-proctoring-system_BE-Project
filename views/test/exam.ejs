@@ -274,7 +274,7 @@
     //base64String =imageUrl.replace("data:", "").replace(/^.+,/, "");
     //imageUrl = base64String;
     console.log("Uploaded ")
-    res = await axios.post('http://prs-portal.herokuapp.com/user/save', {
+    res = await axios.post('https://prs-portal.herokuapp.com/user/save', {
         imageUrl, testid
       });
     
@@ -331,7 +331,7 @@
     // alert(imageBase64Stringsep);
     //     console.log(base64String);
     //console.log(data);
-    res = await axios.post('http://prs-flask.herokuapp.com/camera/<%=user._id%>/', {
+    res = await axios.post('https://prs-flask.herokuapp.com/camera/<%=user._id%>/', {
         data
     });
   /*  res = await axios.post('http://127.0.0.1:5000/camera/<%=user._id%>/', {
@@ -476,7 +476,7 @@
                 //base64String =imageUrl.replace("data:", "").replace(/^.+,/, "");
                 //imageUrl = base64String;
                 console.log("Uploaded ")
-                axios.post('http://prs-portal.herokuapp.com/user/save', {
+                axios.post('https://prs-portal.herokuapp.com/user/save', {
                     imageUrl, testid
                 });
 
@@ -516,7 +516,7 @@
                                 //base64String =imageUrl.replace("data:", "").replace(/^.+,/, "");
                                 //imageUrl = base64String;
                                 console.log("Uploaded ")
-                                axios.post('http://prs-portal.herokuapp.com/user/save', {
+                                axios.post('https://prs-portal.herokuapp.com/user/save', {
                                     imageUrl, testid
                                 });
                 
@@ -646,7 +646,7 @@
           console.log("date",date)
           $.ajax({
             type: "POST",
-            url: `http://prs-portal.herokuapp.com/test/submit-log/<%=tests%>`,
+            url: `https://prs-portal.herokuapp.com/test/submit-log/<%=tests%>`,
            // url: 'http://localhost:3000/test/submit-log/<%=tests%>',
             data: { logs: logs , date:date ,end:end, flag:uf },
             
