@@ -68,7 +68,7 @@
                                 <th style="justify-content: center;font-size:15px;font-weight: bold;color:black"> Attempt  </th>
                                 <th style="font-size:15px;font-weight: bold;color:black"> START  </th>
                                 <th style="font-size:15px;font-weight: bold;color:black"> END  </th>
-                                <th style="font-size:15px;font-weight: bold;"> Minute  </th>
+                               
                                 <th style="font-size:15px;font-weight: bold;"> looked away </th>
                                 <th style="text-align:center;justify-content: center;font-size:15px;font-weight: bold;white-space: -o-pre-wrap; 
                                 word-wrap: break-word;
@@ -88,38 +88,98 @@
                         
                     </tr>
                    
-                        <% for(let j=0; j < tests[0].logs.length; j++) { %> 
-                            <% if(tests[0].logs[j].userId = user ){  %>
-                            <% for(let i=0; i < tests[0].logs[j].logs.logs.length; i++) { %> 
-                              
+                       <%tests.logs.forEach(function (logs) {%> 
+                        <% if((logs.userId = user ) && (logs.logs!= undefined)){ %>
+                         
+                            <% for(i=0;i<logs.logs.length;i++) {%>  
                     <tr class="table-primary" style="color: black;  ">
-                        <td>No. <%= j %></td>
                         <td style="white-space: -o-pre-wrap; 
                         word-wrap: break-word;
                         white-space: pre-wrap; 
                         white-space: -moz-pre-wrap; 
-                        white-space: -pre-wrap;"> <%= tests[0].logs[j].testStartedAt %></td>
+                        white-space: -pre-wrap;"> <%= user  %></td>
                         <td style="white-space: -o-pre-wrap; 
                         word-wrap: break-word;
                         white-space: pre-wrap; 
                         white-space: -moz-pre-wrap; 
-                        white-space: -pre-wrap;"><%= tests[0].logs[j].testCompletedAt %></td>
-                        <td><%=i %></td>
-                        <td><%= tests[0].logs[j].logs.logs[i][0]%></td>
+                        white-space: -pre-wrap;"> <%= logs.testStartedAt %>  </td>
+                        <td style="white-space: -o-pre-wrap; 
+                        word-wrap: break-word;
+                        white-space: pre-wrap; 
+                        white-space: -moz-pre-wrap; 
+                        white-space: -pre-wrap;"><%= logs.testCompletedAt %></td>
+                        
+                        <td><%= logs.logs[i][0]%></td>
                       
-                        <td><%= tests[0].logs[j].logs.logs[i][1] %></td>
-                        <td> <%= tests[0].logs[j].logs.logs[i][2]%> </td>
-                        <td><%= tests[0].logs[j].logs.logs[i][3] %></td>
+                        <td><%= logs.logs[i][1] %></td>    
+                        <td><a href=""> <%= logs.logs[i][2]%> </a> </td>
+                        <td><%= logs.logs[i][3] %></td>
                        
                     
                     </tr>
-                    <% }} %>
+                    <% }}  else{ %>
+                        <% }}); %>
                     </div> 
-                    <% } %>
+                   
                     </table>
+                    <% } %>
+
+                    <% if(tests!=null) { %>
+                        <table class="table" id="score">
+                        <tr> 
+                            <div class="fixed-table-container"> 
+                              
+                                <thead class="thead-light" style="" >
+            
+                                    <th style="font-size:15px;font-weight: bold;">User ID </th>
+                                    <th style="font-size:15px;font-weight: bold;">test ID</th>
+                                    <th style="font-size:15px;font-weight: bold;">SCORE</th>
+                                    <th style="font-size:15px;font-weight: bold;">ANswers</th>
+                                  
+                                </thead>
+                                  
+                            
+                        </tr>
+                       
+                       
+                            <%tests.responses.forEach(function (logs) {%>
+                                <% if(logs.userId = user ){ %>
+                        <tr class="table-primary" style="color: black;">
+                           
+                            <td> <%=logs.userId._id%> </td>
+                            
+                            <td><a href="/test/<%=testid%>/<%=tests.logs[0].userId._id%>/logs"> <%= testid %> </a> </td>
+                            
+                            
+                           
+                            <td><%= logs.score %></td>
+                            <td> 
+                                [
+                                
+                            <% logs.answers.forEach(function (ans) { %>
+                                
+                               <% if(ans==null) {%>  
+                               ,
+                                <%}else{%>
+                                <%= ans %>, 
+                            <%}});%>
+                            ]
+                        </td>
+                        
+                            
+    
+                        </tr>
+                        <%} else{ %>
+                            <%} });%>
+                        </div> 
+                       
+                        <% }%>
+                        
+                        </table>
+                  
                    
             </div>
-            <% } %>
+        
         </div>
      
     <!-- Header -->

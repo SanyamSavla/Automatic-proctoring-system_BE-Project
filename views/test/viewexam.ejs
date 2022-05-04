@@ -29,6 +29,7 @@
                             <th style="font-size:15px;font-weight: bold;">ID </th>
                             <th style="font-size:15px;font-weight: bold;">TEST NAME</th>
                             <th style="font-size:15px;font-weight: bold;">CODE</th>
+                            <th style="font-size:15px;font-weight: bold;">ADD QUESTION</th>
                             <th style="font-size:15px;font-weight: bold;">DURATION </th>
                             <th style="font-size:15px;font-weight: bold;">SCORE </th>
                             <th style="font-size:15px;font-weight: bold;">DETAILS </th>
@@ -40,7 +41,8 @@
                 <tr class="table-primary" style="color: black;">
                     <td><%= test._id%></td>
                     <td><%= test.testName %></td>
-                    <td><a href="/test/<%=test._id%>/addquestion"> <%= test.testcode%> </a> </td>
+                    <td><%= test.testcode%> </td>
+                    <td> <a href="/test/<%=test._id%>/addquestion"> Add Question </a> </td>
                     <td><%= test.settings.testDuration %></td>
                     <td> <%= test.settings.totalScore %></td>
                     <td><a href="/test/logs/<%=test._id%>"> DETAILS </a></td>

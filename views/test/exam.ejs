@@ -98,16 +98,16 @@
                 </div>
                 <div>
                     <div>
-                        <input type="radio" name="<%=i%>"  id="" value="A"> <%= questions[0].questions[i].options[0] %>
+                        <input type="checkbox" name="<%=i%>"  id="" value="A"> <%= questions[0].questions[i].options[0] %>
                     </div>
                     <div>
-                        <input type="radio" name="<%=i%>"  id="" value="B"> <%= questions[0].questions[i].options[1] %>
+                        <input type="checkbox" name="<%=i%>"  id="" value="B"> <%= questions[0].questions[i].options[1] %>
                     </div>  
                     <div>
-                        <input type="radio" name="<%= i%>"  id="" value="C"> <%= questions[0].questions[i].options[2] %>
+                        <input type="checkbox" name="<%=i%>"  id="" value="C"> <%= questions[0].questions[i].options[2] %>
                     </div>
                     <div>
-                        <input type="radio" name="<%= i%>"  id="" value="D"> <%= questions[0].questions[i].options[3] %>
+                        <input type="checkbox" name="<%= i%>"  id="" value="D"> <%= questions[0].questions[i].options[3] %>
                     </div>
                 </div>
                        
@@ -228,7 +228,7 @@
     console.log("X",quest[0].settings.testDuration)
    $(function() {
     $(".preload").fadeOut(10000, function() {
-        $(".content").fadeIn(12000);        
+        $(".content").fadeIn(10000);        
     });
 });
     const video = document.getElementById('video');
@@ -659,7 +659,7 @@
         });
         
       }
-    var x= 1;
+    var x= 20;
       var timeleft = Number(exam_time)+Number(x);
       console.log(timeleft)
     var downloadTimer = setInterval(function(){

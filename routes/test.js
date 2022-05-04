@@ -124,22 +124,39 @@ router.post("/submit-exam/:testid",async  function(req, res)  {
         const correct=[]; // correct answers
        const logs=[];
         
-        for (i = 0; i < length; i++) {
-            const corr= quest.questions[i].correctOptions[0];
-           // console.log(corr)
-                correct.push(corr);
-            }
-        
-        
+        // for (i = 0; i < length; i++) {
+        //     const corr= quest.questions[i].correctOptions[0];
+        //    // console.log(corr)
+        //         correct.push(corr);
+        //     }
+        const corr=[];
+        quest.questions.forEach(function(corrt){
+            
+        // corrt.correctOptions.forEach(function(ans){
+        //     console.log("ans",ans)
+        //     corr.push(ans);
+        // });
+        correct.push(corrt.correctOptions)
+    }); 
+        //  for (i = 0; i < length; i++) {
+        //     quest.questions[i].correctOptions.forEach(function(cort){
+        //         corr.push(cort)
+                
+        //     });
+        //     correct.push(corr);
+        //    // console.log(corr)
+                
+        //     }
+
         console.log(correct);
 		const answers = []; // answers of student
         const responses = [];
         
 
                         for (i = 0; i < length; i++) {
-                            const answer = req.body[i];
+                            //const answer = req.body[i];
                             answers.push(
-                                answer
+                                req.body[i]
                             );
                         }
         //LOGS
@@ -148,14 +165,39 @@ router.post("/submit-exam/:testid",async  function(req, res)  {
 
                         //calculate score 
         var c=0;
-        for (i = 0; i < length; i++) {
-        
+        var x=0;
+        for (i = 0; i < correct.length; i++) {
+            
+            if( correct[i].length >1 ){
+            for(j=0;j<correct[i].length;j++){
+
+                if(answers[i][j]==correct[i][j]){
+                    // console.log( "---",i,"==", answers[i][j]," ..",correct[i][j])    
+                   x= 1;
+                }
+                else{
+                   x=0;
+                }
+            //    c+=1;
+ 
+            }
+            if(x==1){
+                c+=1;
+            }
+            else{
+                continue;
+            }
+        }
+        else{
+            
             if(answers[i]==correct[i]){
                 c+=1;
             }
             else{
                 continue;
             }
+        }
+           
         }
         console.log("Score of",req.user.name,"is",(c));
         console.log( answers);
@@ -287,7 +329,7 @@ router.get('/logs/:testid', function (req, res, next) {
 router.get('/stats/:testid', function (req, res, next) {
     try {
         console.log(req.user._id);
-        Test.find({_id: req.params.testid}, function (err, allDetails) {
+        Test.findOne({_id: req.params.testid}, function (err, allDetails) {
             if (err) {
                 console.log(err);
             } else {
@@ -550,6 +592,7 @@ router.post("/addquestion/:testid",isAdmin,async  function(req, res)  {
         const c=req.body["c"];
         const d=req.body["d"];
         const ans=req.body["ans"];
+        console.log("ans",ans)
 
         options.push( a,b,c,d);
         console.log( options);
