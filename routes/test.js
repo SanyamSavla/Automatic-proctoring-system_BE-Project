@@ -27,12 +27,21 @@ router.get('/userDash', function (req, res, next) {
         req.session.errorMsg = undefined
         req.session.successMsg = undefined
     }
-
-            res.render('test/user-dashboard', {
-                user: req.user,
-                errorMsg: errorMsg,
-                successMsg: successMsg,
-    })
+    userModel.findOne({_id: req.user._id})
+    .populate('score.test')
+    .exec(function (err, allDetails){
+        if (err) {
+            console.log(err);
+        } else {res.render('test/user-dashboard', {
+            user: req.user,
+            errorMsg: errorMsg,
+            successMsg: successMsg,
+            tests: allDetails,
+        
+        })   
+        }
+    });
+            
 });
 
 router.get('/give-exam', function (req, res, next) {
