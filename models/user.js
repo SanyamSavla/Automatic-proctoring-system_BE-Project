@@ -12,6 +12,7 @@ const userschema = new mongoose.Schema({
 		type: Boolean,
 		default: false
 	},
+  logged:{type:Boolean, default:false},
     name: {type: String},
     course:Array,
     class:{type: String,},

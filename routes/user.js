@@ -1,6 +1,7 @@
 const express = require('express');
       router = express.Router();
       passport = require('passport');
+      // p=require('../config/p')
       userModel = require('../models/user');
       imgModel = require('../models/image');
       proctModel= require('../models/proctor');
@@ -312,7 +313,10 @@ router.get("/login", (req, res, next) => {
             });
         }
     });
-    
+    function sessionidcheck(req, res, next) {
+      
+      
+  }
     router.post(
         "/login",
         passport.authenticate("user", {
@@ -324,7 +328,10 @@ router.get("/login", (req, res, next) => {
         (req, res) => {
             console.log(req.session);
             res.redirect("/user/register", {userModel:req.user});
-        }
+            console.log(req.session.genid)
+        },
+       
+        
     );
 router.get("/teacher-login", (req, res, next) => {
       try {
@@ -343,7 +350,7 @@ router.get("/teacher-login", (req, res, next) => {
   });
   
   router.post(
-      "/teacher-login",
+      "/teacher-login", 
       passport.authenticate("user", {
           failureRedirect: "/user/teacher-login",
           failureFlash: true,
@@ -375,6 +382,7 @@ router.get("/teacher-login", (req, res, next) => {
       });
 
       router.get('/profile', isLoggedIn, function (req, res, next) { 
+        
        var success="Successs";
         const imageUrl=   imgModel
         .findOne({user: req.user._id})

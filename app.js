@@ -18,7 +18,7 @@ var MongoStore= require('connect-mongo');
 var app = express();
 const cors = require('cors');
 require('./config/passport')(passport);
-
+var genuuid=require('uuid/v4');
 const axios = require('axios');
 var indexRouter = require('./routes/index');
 var userRouter = require('./routes/user');
@@ -69,12 +69,16 @@ app.use(
     secret: process.env.globalSecret,
     resave: false,
     saveUninitialized: false,
+    genid: function(req) {
+      return genuuid() // use UUIDs for session IDs
+    },
   })
 );
 app.use(passport.initialize());
 app.use(passport.session());
 app.locals.moment = require("moment");
 app.use(flash());
+
 
 
 //passport.use("user", new LocalStrategy(User.authenticate()));
@@ -111,6 +115,8 @@ app.use(routes);
 });
 
 */
+// var MemoryStore = require('./node_modules/connect/lib/middleware/session/memory');
+// const MemoryStore = require('memorystore')(session)
 app.use(session({
 
 
@@ -118,6 +124,7 @@ app.use(session({
   resave: false,
   saveUninitialized: false,
   ////store: new MongoStore({mongooseConnection: mongoose.connection}),
+  // store: new MemoryStore({ reapInterval: 6000 * 10 }) ,
   store: MongoStore.create({
     mongoUrl: databaseUri
 }),

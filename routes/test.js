@@ -69,7 +69,25 @@ router.get('/give-exam', function (req, res, next) {
           
 });
 let flag=0;
+let visited;
+
 router.get('/:testid/exam', async function (req, res, next) {
+    
+    // visited = req.session.visitCount ? (visited + 1) : 1;
+    //     console.log("Reload",visited);
+
+    if (req.session.views) {
+        req.session.views++
+        console.log("==",req.session.views)
+      } else {
+        req.session.views = 1
+        console.log("else",req.session.views)
+      }
+      console.log(req.session)
+    
+      console.log(req.sessionID)
+    
+    //   req.session.cookie._expires=false;
     
     await userModel.find({_id: req.user._id} , (function(err, result) {
         if (err) {
@@ -97,22 +115,24 @@ router.get('/:testid/exam', async function (req, res, next) {
     }
     console.log("flag",flag)
     flag=0;
-    if(flag<1){
-   await Test.find({_id: req.params.testid}, function (err, allDetails) {
-        if (err) {
-            console.log(err);
-        } else {res.render('test/exam', {
-            user: req.user,
-            errorMsg: errorMsg,
-            successMsg: successMsg,
-            tests:req.params.testid,
-            questions: allDetails,message: message,
-            hasError: message.length > 0,
-        })   
-        }
-    })
-    
-}
+        if(flag<1){
+    await Test.find({_id: req.params.testid}, function (err, allDetails) {
+            if (err) {
+                console.log(err);
+            } else {res.render('test/exam', {
+                user: req.user,
+                errorMsg: errorMsg,
+                successMsg: successMsg,
+                tests:req.params.testid,
+                questions: allDetails,message: message,
+                hasError: message.length > 0,
+            })
+            
+            
+            }
+        })
+        
+    }
     else{
         
         req.flash("success","EXAM GIVEN ALREADY");
