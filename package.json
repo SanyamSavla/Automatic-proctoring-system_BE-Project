@@ -56,6 +56,7 @@
     "passport-google-oauth": "^2.0.0",
     "passport-local": "^1.0.0",
     "passport-local-mongoose": "^6.0.1",
+    "passport-one-session-per-user": "^1.0.3",
     "promise-polyfill": "8.1.3",
     "razorpay": "^2.0.6",
     "req-flash": "0.0.3",

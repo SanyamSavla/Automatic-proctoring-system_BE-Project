@@ -76,6 +76,11 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
+var passportOneSessionPerUser=require('passport-one-session-per-user')
+console.log(passportOneSessionPerUser)
+passport.use(new passportOneSessionPerUser())
+app.use(passport.authenticate('passport-one-session-per-user'))
+
 app.locals.moment = require("moment");
 app.use(flash());
 
