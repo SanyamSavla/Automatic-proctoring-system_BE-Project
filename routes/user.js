@@ -314,7 +314,7 @@ router.get("/login", (req, res, next) => {
         }
     });
     function sessionidcheck(req, res, next) {
-      
+      console.log("...",req.user)
       
   }
     router.post(
@@ -376,29 +376,60 @@ router.get("/teacher-login", (req, res, next) => {
       }
 
       router.get('/logout', isLoggedIn, function (req, res, next) {
+        
+        userModel.findOneAndUpdate({_id: req.user._id},{"logged": "false"}, function(err, result){
+        
+          if(err){
+            console.log(err)
+        }
+        else{
+           
+        }
+      
+      })
         req.logout();
+
         req.flash('success','logged out');
         res.redirect('/');
       });
 
       router.get('/profile', isLoggedIn, function (req, res, next) { 
         
-       var success="Successs";
-        const imageUrl=   imgModel
-        .findOne({user: req.user._id})
-        //.populate("imageUrl") // key to populate
-        .then(user => {
-                console.log("...",user.imageUrl)
-                res.render('user/profile', {
-                    user: req.user,
-                    imageUrl:user.imageUrl,
-                  //  success:success
-                    success: parseInt(success)
-                });
-                
-        });  
-          var success = req.query.success
-       console.log("imae",imageUrl);
+      console.log(req.user.logged)
+      if(!req.user.logged){
+        // req.user.logged="true"
+        userModel.findOneAndUpdate({_id: req.user._id},{"logged": "true"}, function(err, result){
+        
+          if(err){
+            console.log(err)
+        }
+        else{
+           
+        }
+      
+      })
+      var success="Successs";
+      const imageUrl=   imgModel
+      .findOne({user: req.user._id})
+      //.populate("imageUrl") // key to populate
+      .then(user => {
+              console.log("...",user.imageUrl)
+              res.render('user/profile', {
+                  user: req.user,
+                  imageUrl:user.imageUrl,
+                //  success:success
+                  success: parseInt(success)
+              });
+              
+      });  
+        var success = req.query.success
+     console.log("imae",imageUrl);
+    
+    }
+      else{
+     console.log("..[[")
+     res.redirect("/logout")
+      }
       
     });
 

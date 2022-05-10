@@ -123,7 +123,7 @@ function uploadPhoto() {
       console.log("ssss",response.secure_url);
       imageUrl=response.secure_url;
       //upload_response.value += this.responseText + "\n";
-      axios.post('http://prs-portal.herokuapp.com/user/upload', {
+      axios.post('https://prs-portal.herokuapp.com/user/upload', {
         imageUrl
       });
     };

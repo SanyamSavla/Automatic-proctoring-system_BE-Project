@@ -45,7 +45,7 @@ mongoose.Promise = global.Promise;
 const databaseUri =process.env.MONGODB_URI ;
 
 mongoose
-  .connect(databaseUri, { useCreateIndex:true, useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(databaseUri, { useCreateIndex:true, useNewUrlParser: true, useUnifiedTopology: true,useFindAndModify:false })
   .then(() => console.log(`Database connected`))
   .catch((err) => console.log(`Database connection error: ${err.message}`));
 
@@ -76,11 +76,6 @@ app.use(
 );
 app.use(passport.initialize());
 app.use(passport.session());
-var passportOneSessionPerUser=require('passport-one-session-per-user')
-console.log(passportOneSessionPerUser)
-passport.use(new passportOneSessionPerUser())
-app.use(passport.authenticate('passport-one-session-per-user'))
-
 app.locals.moment = require("moment");
 app.use(flash());
 
