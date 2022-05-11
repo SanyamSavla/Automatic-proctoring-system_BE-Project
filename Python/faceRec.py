@@ -147,7 +147,7 @@ def faceRec(arg1,arg2):
     if(len(face_recognition.face_encodings(unknown_picture))==1):
         unknown_face_encoding = face_recognition.face_encodings(unknown_picture)[0]
         results = face_recognition.compare_faces(known_face_encodings, unknown_face_encoding)
-   
+        print(results[0])
     else:
         return '2'
     # except Exception as e:
@@ -156,14 +156,13 @@ def faceRec(arg1,arg2):
 
    #comparing encodings for both
      
-    # print(results[0])
+    #print(results[0])
     #deleting live image from test after analysis
     toDelete()
-    if(results[0]=='True'):
+    if(results[0]):
         return '1'
-    elif((results[0]=="False")):
-        return '0'
     else:
+        
         return '0'
 
 

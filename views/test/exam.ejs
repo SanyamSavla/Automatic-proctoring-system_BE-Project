@@ -227,7 +227,7 @@
     let exam_time= quest[0].settings.testDuration;
     console.log("X",quest[0].settings.testDuration)
    $(function() {
-    $(".preload").fadeOut(10000, function() {
+    $(".preload").fadeOut(25000, function() {
         $(".content").fadeIn(10000);        
     });
 });
@@ -342,12 +342,18 @@
    
     
     if(score.verified>1){
-        alert(" sit properly")
+        //alert(" sit properly")
+        let heading = document.getElementById('text_from_script');
+                // alert(warning)
+                heading.innerText = "Sit Properly!!!";
     }
     else if(score.verified==0){
         userflag+=1;
     console.log("User verificaion",userflag)
-    alert(" Some other person")
+    let heading = document.getElementById('text_from_script');
+                // alert(warning)
+    heading.innerText = "Some other person!!";
+    //alert(" Some other person")
     }
     else{
 
@@ -468,7 +474,7 @@
                 }
 
               //  save();
-              console.log("looking away?????",lookedAway)
+              //console.log("looking away?????",lookedAway)
                if(lookedAway=="true"|| predictions[0].faceInViewConfidence<0.8|| predictions.length>1){
                    console.log("looking away true")
                 canvas.getContext('2d').drawImage(video, 0, 0, 200,150);      
@@ -484,7 +490,7 @@
                }
                else{
 
-                console.log("looking away FALSE")
+              //  console.log("looking away FALSE")
                 }
                 return {lookedAway,numberOfPeople:predictions.length,confidence:predictions[0].faceInViewConfidence};
             }
@@ -524,7 +530,7 @@
                             }
                             else{
              
-                             console.log("looking away FALSE")
+                             //console.log("looking away FALSE")
                              }
                            
                               return {
@@ -679,12 +685,19 @@
           console.log(exam_time)   
       }, ((exam_time)*1000));
       };
+var f=0;
+      $(window).blur(function() {
+          
+          f+=1;
+         if(f<5){       
+         alert("Cant change tab")
+         }
+         else{
 
-      /*$(window).blur(function() {
-         
-        alert('You are not allowed to leave ');
+         }
+
          //do something else
-     });*/
+     });
   
     
     ////  let   logs= {logs:[{0:0,1:0,2:0,3:0}]};

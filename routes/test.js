@@ -74,29 +74,25 @@ let visited;
 router.get('/:testid/exam', async function (req, res, next) {
     
     // visited = req.session.visitCount ? (visited + 1) : 1;
-    //     console.log("Reload",visited);
-
-    if (req.session.views) {
-        req.session.views++
-        console.log("==",req.session.views)
-      } else {
-        req.session.views = 1
-        console.log("else",req.session.views)
-      }
-      console.log(req.session)
-    
-      console.log(req.sessionID)
+    //     console.log("Reload",visited)
+      
     
     //   req.session.cookie._expires=false;
     
-    await userModel.find({_id: req.user._id} , (function(err, result) {
+    await userModel.findOne({_id: req.user._id} , (function(err, result) {
+        flag=0;
         if (err) {
           
           console.log(err);
         } else {
-          for (i=0; i<result[0].score.length; i++) {
-            if(result[0].score[i].test==req.params.testid){
+          for (i=0; i<result.score.length; i++) {
+            if(result.score[i].test==req.params.testid){
+                    console.log(result.score[i].test)
+                    console.log(req.params.testid)
                     flag+=1;
+            }
+            else{
+                
             }
           }
           console.log("flag--",flag)
@@ -114,7 +110,7 @@ router.get('/:testid/exam', async function (req, res, next) {
         req.session.successMsg = undefined
     }
     console.log("flag",flag)
-    flag=0;
+    
         if(flag<1){
     await Test.find({_id: req.params.testid}, function (err, allDetails) {
             if (err) {
