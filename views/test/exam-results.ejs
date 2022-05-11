@@ -83,9 +83,8 @@
                         <td><%= i+1%></td>
                         <td><%= user.score[i].test%></td>    
                         <td> <%=tests.score[i].test.testName  %> </td>
-
                         <td> <%= user.score[i].score%>/<%=tests.score[i].test.settings.totalScore  %> </td>
-                        <td> <a href="/test/stats/<%=user.score[i].test%>/"> Logs </a></td>
+                        <td> <a href="/test/stats/<%=user.score[i].test%>/<%=user._id%>"> Logs </a></td>
                         <td> <a href="/test/<%=user.score[i].test%>/images"> Images  </a></td>
                       
                        
@@ -127,5 +126,3 @@
     input.value = count();  
 
 </script>
-
-<%- include('../partials/footer'); -%>

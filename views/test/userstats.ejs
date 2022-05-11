@@ -89,15 +89,17 @@
                     </tr>
                    
                        <%tests.logs.forEach(function (logs) {%> 
-                        <% if((logs.userId = user ) && (logs.logs!= undefined)){ %>
-                         
+                       
+                        <% if((logs.userId == user ) && (logs.logs!= undefined)){ %>
+                            
+                             
                             <% for(i=0;i<logs.logs.length;i++) {%>  
                     <tr class="table-primary" style="color: black;  ">
                         <td style="white-space: -o-pre-wrap; 
-                        word-wrap: break-word;
-                        white-space: pre-wrap; 
-                        white-space: -moz-pre-wrap; 
-                        white-space: -pre-wrap;"> <%= user  %></td>
+                            word-wrap: break-word;
+                            white-space: pre-wrap; 
+                            white-space: -moz-pre-wrap; 
+                            white-space: -pre-wrap;"> <%= logs.userId %></td>      
                         <td style="white-space: -o-pre-wrap; 
                         word-wrap: break-word;
                         white-space: pre-wrap; 
@@ -143,7 +145,7 @@
                        
                        
                             <%tests.responses.forEach(function (logs) {%>
-                                <% if(logs.userId = user ){ %>
+                                <% if(logs.userId == user ){ %>
                         <tr class="table-primary" style="color: black;">
                            
                             <td> <%=logs.userId._id%> </td>

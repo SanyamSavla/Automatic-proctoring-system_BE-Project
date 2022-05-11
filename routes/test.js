@@ -355,16 +355,17 @@ router.get('/logs/:testid', function (req, res, next) {
           
 });
 
-router.get('/stats/:testid', function (req, res, next) {
+router.get('/stats/:testid/:userid', function (req, res, next) {
     try {
         console.log(req.user._id);
+        
         Test.findOne({_id: req.params.testid}, function (err, allDetails) {
             if (err) {
                 console.log(err);
             } else {
 
                 console.log(",,",allDetails)
-                res.render("test/userstats", { testid:req.params.testid , tests:allDetails,user:req.user._id, username:req.user.name })
+                res.render("test/userstats", { testid:req.params.testid , tests:allDetails,user:req.params.userid, username:req.user.name })
             }
         }) 
 
