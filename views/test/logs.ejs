@@ -105,7 +105,9 @@
                     <% }%>
                     
                     </table>
-                    
+                    <button onclick="exportTableToExcel('tblData')">DOWNLOAD SHEET</button>
+                    <br>
+                    <br>
                 <% if(tests!=null) { %>
                     <table class="table" id="score">
                     <tr> 
@@ -157,8 +159,8 @@
                     <% }%>
                     
                     </table>
-                    <button onclick="exportTableToExcel('tblData')">DOWNLOAD SHEET</button>
-                    <button onclick="exportTableToExcel('score')">DOWNLOAD SHEET</button>
+                   
+                    <button onclick="exportTableToExcel('score')">DOWNLOAD Score SHEET</button>
   
                 </div>
         </div>

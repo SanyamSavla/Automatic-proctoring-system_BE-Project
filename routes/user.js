@@ -389,7 +389,7 @@ router.get("/teacher-login", (req, res, next) => {
       })
         req.logout();
 
-        req.flash('success','logged out');
+        req.flash("success","logged out");
         res.redirect('/');
       });
 
@@ -428,6 +428,8 @@ router.get("/teacher-login", (req, res, next) => {
     }
       else{
      console.log("..[[")
+     
+     req.flash("success","Multiple logins")
      res.redirect("/logout")
       }
       
