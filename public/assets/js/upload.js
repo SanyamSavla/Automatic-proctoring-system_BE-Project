@@ -1,3 +1,4 @@
+
 var cloud_name='dn24716of',
   upload_preset="ml_default",
   video_camera,
@@ -122,10 +123,13 @@ function uploadPhoto() {
 
       console.log("ssss",response.secure_url);
       imageUrl=response.secure_url;
+    
       //upload_response.value += this.responseText + "\n";
       axios.post('https://prs-portal.herokuapp.com/user/upload', {
         imageUrl
       });
+      
+    res=  axios.post('https://prs-flask1.herokuapp.com/',{ imageUrl});
     };
 
     xhr.send(formdata);

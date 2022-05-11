@@ -484,7 +484,7 @@ router.get("/teacher-login", (req, res, next) => {
                     response.pipe(localpath);
                 })
           }
-          saveimage(req.body.imageUrl,"./Python/uploads/"+req.user.rollnumber+".png")
+         // saveimage(req.body.imageUrl,"./Python/uploads/"+req.user.rollnumber+".png")
         //  let data = fs.readFileSync(path.join(__dirname + '../../uploads/'))
         } catch (err) {
           console.error('Something went wrong', err);
@@ -577,6 +577,7 @@ router.get("/teacher-login", (req, res, next) => {
     
       //var webcam = nodeWebCam.create(options);
     router.post('/u', isLoggedIn, async (req, res) => {
+      
         req.flash("success", "Successfully Updated!");
           res.redirect('/user/profile');
 
