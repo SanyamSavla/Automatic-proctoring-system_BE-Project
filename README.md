@@ -20,7 +20,6 @@ To setup and use the website, follow the steps mentioned below:
 * python
 * pip
 ```
-python get-pip.py
 ```
 * Clone the repository
 
@@ -32,14 +31,6 @@ Move to the installed folder and use the package manager [pip](https://pip.pypa.
 pip install -r requirements.txt
 ```
 
-### Usage
-
-Go to the root folder and run the following commands:
-```
-python model.py
-python file_uploader.py
-```
-
 ### User guide
 [Click here] to view the user guide.
 
@@ -48,6 +39,8 @@ python file_uploader.py
 * Python
 * Flask
 * JavaScript
+* NODEJS
+* MONGODB
 * Tensorflow
 
 ### Contributing
